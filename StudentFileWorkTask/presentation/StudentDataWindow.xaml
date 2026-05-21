@@ -1,0 +1,65 @@
+﻿<Window x:Class="StudentFileWorkTask.presentation.StudentDataWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentFileWorkTask.presentation"
+        mc:Ignorable="d"
+        Background="White"
+
+        Title="StudentDataWindow" Height="450" Width="800">
+    <Grid   Margin="20" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="10*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Анализ результатов" Grid.Row="0"/>
+
+        <StackPanel Grid.Row="1">
+            <StackPanel   Grid.Column="0">
+                <TextBlock Text="Фильтры" Margin="0 0 0 15"/>
+
+                <ListBox Name="studentFilterListBox" ItemsSource="{Binding optionList}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate >
+                            <StackPanel  Margin="0 0 0 20">
+                                <TextBlock Text="{Binding FilterName}" Margin="0 0 0 10"/>
+                                    <ListBox Name="filterOptionsListBox" ItemsSource="{Binding OptionList}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox x:Name="checkBox1" IsThreeState="True" IsChecked="{Binding IsChecked}" Height="20" Content="{Binding Option}" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>   
+            
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <TextBlock Text="Предпросмотр данных" Margin="0 0 0 15"/>
+            <DataGrid x:Name="studentResultGrid" AutoGenerateColumns="True" ItemsSource="{Binding studentResults}">
+            </DataGrid>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0 40 0 0">
+                <TextBlock Text="Агрегация" Margin="0 0 15 0"/>
+                <RadioButton x:Name="sumAgregationOption" Content="Сумма" Margin="0 0 10 0" Click="sumAgregationOption_Click"/>
+                <RadioButton x:Name="middleAgregationOption" Content="Среднее" Click="middleAgregationOption_Click"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0 20 40 0">
+                <Button Content="Обновить" Margin="0 0 10 0"/>
+                <Button Content="Экспорт в Excel"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
