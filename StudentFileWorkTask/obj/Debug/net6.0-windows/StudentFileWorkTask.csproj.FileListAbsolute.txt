@@ -21,3 +21,8 @@ D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\refint\S
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.pdb
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.genruntimeconfig.cache
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\ref\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\MaterialDesignColors.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml

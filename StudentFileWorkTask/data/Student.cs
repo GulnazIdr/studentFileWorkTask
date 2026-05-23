@@ -13,7 +13,7 @@ namespace StudentFileWorkTask.data
         public string Patronymic { get; set; }
         public Group? Group { get; set; } = null;
 
-        public Student(string surname, string name, string patronymic, Group group)
+        public Student(string surname, string name, string patronymic, Group? group = null)
         {
             Surname = surname;
             Name = name;
