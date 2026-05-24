@@ -1,0 +1,143 @@
+﻿<Window x:Class="StudentFileWorkTask.presentation.StudentDataWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:StudentFileWorkTask.presentation"
+        xmlns:materialDesign="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
+        mc:Ignorable="d"
+        Background="#F5F5F5"
+        Title="Анализ результатов студентов" Height="600" Width="1000">
+    
+    <Grid Margin="25">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Анализ результатов" 
+                   Grid.Row="0" 
+                   Grid.ColumnSpan="2"
+                   FontSize="20" 
+                   FontWeight="Bold"
+                   Foreground="#81A6C6"
+                   Margin="0,0,0,20"/>
+
+        <Border Grid.Row="1" 
+                Grid.Column="0" 
+                Background="White" 
+                CornerRadius="8"
+                Padding="15"
+                Margin="0,0,15,0"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1">
+
+            <StackPanel>
+                <TextBlock Text="Фильтры" 
+                           Style="{StaticResource SectionHeaderStyle}"/>
+
+                <ScrollViewer MaxHeight="450" VerticalScrollBarVisibility="Auto">
+                    <ListBox Name="studentFilterListBox" ItemsSource="{Binding OptionList}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,15">
+                                    <TextBlock Text="{Binding FilterName}" 
+                                               FontWeight="Bold"
+                                               Foreground="#34495E"
+                                               Margin="0,0,0,8"/>
+                                    <ItemsControl ItemsSource="{Binding Options}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Checked="filterCheck_Checked" 
+                                                          Unchecked="filterCheck_Unchecked" 
+                                                          IsThreeState="False" 
+                                                          IsChecked="{Binding IsChecked}" 
+                                                          Content="{Binding Option}"
+                                                          Margin="0,4,0,4"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" 
+                Grid.Column="1" 
+                Background="White" 
+                CornerRadius="8"
+                Padding="15"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1">
+
+            <StackPanel>
+                <TextBlock Text="Предпросмотр данных" 
+                           Style="{StaticResource SectionHeaderStyle}"/>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="380">
+                    <DataGrid x:Name="studentResultGrid" 
+                              AutoGenerateColumns="False" 
+                              ItemsSource="{Binding StudentResultList}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Группа" 
+                                                Binding="{Binding Student.Group.GroupName}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Студент" 
+                                                Binding="{Binding Student.Surname}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Дата" 
+                                                Binding="{Binding Date}"
+                                                Width="Auto"/>
+                            <DataGridTextColumn Header="Тема" 
+                                                Binding="{Binding Question.Theme.ThemeName}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Вопрос" 
+                                                Binding="{Binding Question.Quest}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Балл" 
+                                                Binding="{Binding Score}"
+                                                Width="60"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </ScrollViewer>
+
+                <Border Background="#F8F9FA" 
+                        CornerRadius="6" 
+                        Padding="12"
+                        Margin="0,15,0,15">
+                    <StackPanel x:Name="dataPanel">
+                        <TextBlock Text="Агрегация" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#81A6C6"
+                                   Margin="0,0,0,8"/>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton x:Name="defaultAgregationOption" 
+                                         Content="Обычный" 
+                                         Checked="AggregationOption_Checked"/>
+                            <RadioButton x:Name="sumAgregationOption" 
+                                         Content="Сумма" 
+                                         Checked="AggregationOption_Checked"/>
+                            <RadioButton x:Name="middleAgregationOption" 
+                                         Content="Среднее" 
+                                         Checked="AggregationOption_Checked"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <Button x:Name="excelCreateBtn" 
+                        Content="Сформировать отчет по группам" 
+                        Click="excelCreateBtn_Click" 
+                        Style="{StaticResource RoundButton}"
+                        HorizontalAlignment="Left"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
