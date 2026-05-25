@@ -1,0 +1,6 @@
+/.vs/
+/FileContentIndex/
+/bin/
+/obj/
+*.user
+/StudentFileWorkTask/obj/Debug/net6.0-windows/presentation/StudentDataWindow.g.i.cs
