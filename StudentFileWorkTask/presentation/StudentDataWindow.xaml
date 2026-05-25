@@ -82,29 +82,36 @@
                 <TextBlock Text="Предпросмотр данных" 
                            Style="{StaticResource SectionHeaderStyle}"/>
 
+                <FrameworkElement x:Name="columnElement" Visibility="Collapsed"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="380">
                     <DataGrid x:Name="studentResultGrid" 
                               AutoGenerateColumns="False" 
                               ItemsSource="{Binding StudentResultList}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Группа" 
+                                              Visibility="{Binding DataContext.DetailColumnsVisibility,
+                                          Source={x:Reference columnElement}}"
                                                 Binding="{Binding Student.Group.GroupName}"
                                                 Width="*"/>
                             <DataGridTextColumn Header="Студент" 
                                                 Binding="{Binding Student.Surname}"
                                                 Width="*"/>
                             <DataGridTextColumn Header="Дата" 
+                                                Visibility="{Binding DataContext.DetailColumnsVisibility,
+Source={x:Reference columnElement}}"                              
                                                 Binding="{Binding Date}"
-                                                Width="Auto"/>
+                                                Width="*"/>
                             <DataGridTextColumn Header="Тема" 
                                                 Binding="{Binding Question.Theme.ThemeName}"
                                                 Width="*"/>
                             <DataGridTextColumn Header="Вопрос" 
+                                                 Visibility="{Binding DataContext.DetailColumnsVisibility,
+Source={x:Reference columnElement}}"
                                                 Binding="{Binding Question.Quest}"
                                                 Width="*"/>
                             <DataGridTextColumn Header="Балл" 
                                                 Binding="{Binding Score}"
-                                                Width="60"/>
+                                                Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </ScrollViewer>

@@ -132,17 +132,13 @@ namespace StudentFileWorkTask.presentation
         }
 
         private Visibility _detailColumnsVisibility;
-
-        public Visibility DetailColumnsVisibility
+        public  Visibility DetailColumnsVisibility
         {
             get { return _detailColumnsVisibility; }
             set
             {
-                if (_detailColumnsVisibility != value)
-                {
                     _detailColumnsVisibility = value;
                     OnPropertyChanged(nameof(DetailColumnsVisibility));
-                }
             }
         }
 
@@ -288,20 +284,25 @@ namespace StudentFileWorkTask.presentation
             {
                 StudentResultList = new ObservableCollection<StudentResult>(currentList);
             }
+         
         }
 
         public List<StudentResultThemeSum> GetStudentResultThemeSummary()
         {
             var index = 0;
             if (IsSumAggregationChecked) {
-                var list = aggregated.GroupBy(result => new { result.Student }).Select(r =>
+                List<StudentResultThemeSum> list = aggregated.GroupBy(result => new { result.Student }).Select(r =>
                     new StudentResultThemeSum(
-                        ++index,
                          r.Key.Student,
                          r.ToDictionary(v => v.Question.Theme.ThemeName, v => (int)v.Score),
                          (int)r.Sum(s => s.Score)
                     )
-                ).OrderBy(r => r.Student.Surname). ToList();
+                ).OrderBy(r => r.Student.Surname).ToList();
+
+                foreach (var result in list)
+                {
+                    result.Index = ++index;
+                }
 
                 return list;
             }
@@ -349,6 +350,7 @@ namespace StudentFileWorkTask.presentation
             DetailColumnsVisibility = (!IsDefaultggregationChecked)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
+
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

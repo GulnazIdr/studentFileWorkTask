@@ -56,6 +56,7 @@ namespace StudentFileWorkTask.presentation
             }
 
             studentResultViewModel.OnAggregated();
+
         }
 
         private void excelCreateBtn_Click(object sender, RoutedEventArgs e)
