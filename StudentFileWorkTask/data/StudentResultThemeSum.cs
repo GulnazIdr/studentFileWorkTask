@@ -13,7 +13,7 @@ namespace StudentFileWorkTask.data
         public Dictionary<string, int> Score { get; set; }
         public int ScoreSummary { get; set; }
 
-        public StudentResultThemeSum(int index, Student student, Dictionary<string, int> score, int scoreSummary)
+        public StudentResultThemeSum(Student student, Dictionary<string, int> score, int scoreSummary, int index = 1)
         {
             Index = index;
             Score = score;
