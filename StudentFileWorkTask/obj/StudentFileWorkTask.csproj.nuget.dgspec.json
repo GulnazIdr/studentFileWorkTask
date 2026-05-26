@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {}
+    "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {}
   },
   "projects": {
-    "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {
+    "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+        "projectUniqueName": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
         "projectName": "StudentFileWorkTask",
-        "projectPath": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
-        "packagesPath": "C:\\Users\\gulnaz\\.nuget\\packages\\",
-        "outputPath": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\obj\\",
+        "projectPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+        "packagesPath": "C:\\Users\\cxnts\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\gulnaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cxnts\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,12 +45,16 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "MaterialDesignThemes": {
               "target": "Package",
               "version": "[5.3.2, )"
@@ -74,7 +79,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }
