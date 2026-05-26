@@ -140,7 +140,7 @@ Source={x:Reference columnElement}}"
                 </Border>
                 
                 <Button x:Name="excelCreateBtn" 
-                        Content="Сформировать отчет по группам" 
+                        Content="Сформировать отчёт по группам" 
                         Click="excelCreateBtn_Click" 
                         Style="{StaticResource RoundButton}"
                         HorizontalAlignment="Left"/>

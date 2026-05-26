@@ -88,7 +88,8 @@ namespace StudentFileWorkTask.export
 
             var headerRange = worksheet.Range("A1:E1");
             headerRange.Style.Font.Bold = true;
-            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var groupedData = data
@@ -143,7 +144,8 @@ namespace StudentFileWorkTask.export
 
                 var headerRange = worksheet.Range("A1:E1");
                 headerRange.Style.Font.Bold = true;
-                headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+                headerRange.Style.Font.FontColor = XLColor.White;
+                headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
                 headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 var groupedData = groupData
@@ -217,7 +219,8 @@ namespace StudentFileWorkTask.export
 
             var headerRange = worksheet.Range(worksheet.Cell(1, 1), worksheet.Cell(1, col));
             headerRange.Style.Font.Bold = true;
-            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             int row = 2;
@@ -225,7 +228,7 @@ namespace StudentFileWorkTask.export
             foreach (var studentData in studentsData)
             {
                 worksheet.Cell(row, 1).Value = index++;
-                worksheet.Cell(row, 2).Value = $"{studentData.Student.Surname} {studentData.Student.Name} {studentData.Student.Patronymic}".Trim();
+                worksheet.Cell(row, 2).Value = $"{studentData.Student.Surname} {studentData.Student.Name} {studentData.Student.Patronymic}";
 
                 double totalScore = 0;
                 col = 3;
@@ -259,7 +262,8 @@ namespace StudentFileWorkTask.export
 
             var headerRange = worksheet.Range("A1:E1");
             headerRange.Style.Font.Bold = true;
-            headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var statistics = data
