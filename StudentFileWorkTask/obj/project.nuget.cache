@@ -1,22 +1,24 @@
 {
   "version": 2,
-  "dgSpecHash": "WHlCeL5UzEw=",
+  "dgSpecHash": "j+FlDPrkUc4=",
   "success": true,
-  "projectFilePath": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+  "projectFilePath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\gulnaz\\.nuget\\packages\\materialdesigncolors\\5.3.2\\materialdesigncolors.5.3.2.nupkg.sha512",
-    "C:\\Users\\gulnaz\\.nuget\\packages\\materialdesignthemes\\5.3.2\\materialdesignthemes.5.3.2.nupkg.sha512",
-    "C:\\Users\\gulnaz\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.77\\microsoft.xaml.behaviors.wpf.1.1.77.nupkg.sha512"
+    "C:\\Users\\kseni\\.nuget\\packages\\materialdesigncolors\\5.3.2\\materialdesigncolors.5.3.2.nupkg.sha512",
+    "C:\\Users\\kseni\\.nuget\\packages\\materialdesignthemes\\5.3.2\\materialdesignthemes.5.3.2.nupkg.sha512",
+    "C:\\Users\\kseni\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.77\\microsoft.xaml.behaviors.wpf.1.1.77.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Пакет \"MaterialDesignColors 5.3.2\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net6.0-windows7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
+      "projectPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
       "libraryId": "MaterialDesignColors",
       "targetGraphs": [
-        "net6.0-windows7.0"
+        "net6.0-windows"
       ]
     }
   ]

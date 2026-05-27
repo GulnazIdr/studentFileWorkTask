@@ -26,3 +26,31 @@ D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsof
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
 D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.exe
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.deps.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.runtimeconfig.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\MaterialDesignColors.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\MainWindow.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.lref
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\MainWindow.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.g.resources
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.GeneratedMSBuildEditorConfig.editorconfig
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfoInputs.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfo.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.CoreCompileInputs.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.sourcelink.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\refint\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.genruntimeconfig.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\ref\StudentFileWorkTask.dll

@@ -12,12 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudentFileWorkTask.data;
+using Microsoft.Win32;
+using System.IO;
 
 namespace StudentFileWorkTask.presentation
 {
     public partial class StudentDataWindow : Window
     {
         StudentResultViewModel studentResultViewModel;
+        private List<string> _selectedFiles = new List<string>();
+
         public StudentDataWindow()
         {
             InitializeComponent();
@@ -56,7 +60,6 @@ namespace StudentFileWorkTask.presentation
             }
 
             studentResultViewModel.OnAggregated();
-
         }
 
         private void excelCreateBtn_Click(object sender, RoutedEventArgs e)
@@ -95,9 +98,68 @@ namespace StudentFileWorkTask.presentation
             });
 
             List<StudentResultThemeSum> studentResultThemeSumList = studentResultViewModel.GetStudentResultThemeSummary();
-            dataGrid.ItemsSource = studentResultThemeSumList;    
+            dataGrid.ItemsSource = studentResultThemeSumList;
 
             dataPanel.Children.Add(dataGrid);
+        }
+
+        private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Multiselect = true;
+            dialog.Filter = "Excel files|*.xlsx;*.xls|CSV files|*.csv|All files|*.*";
+
+            if (dialog.ShowDialog() == true)
+            {
+                int added = 0;
+                foreach (var file in dialog.FileNames)
+                {
+                    if (!_selectedFiles.Contains(file))
+                    {
+                        _selectedFiles.Add(file);
+                        lstFiles.Items.Add(System.IO.Path.GetFileName(file));
+                        added++;
+                    }
+                }
+                MessageBox.Show($"Загружено файлов: {added}");
+            }
+        }
+
+        private void BtnSelectFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = "Выберите любой файл в нужной папке";
+            dialog.FileName = "выберите файл";
+
+            if (dialog.ShowDialog() == true)
+            {
+                string folderPath = System.IO.Path.GetDirectoryName(dialog.FileName);
+                string[] extensions = { "*.xlsx", "*.xls", "*.csv" };
+                var files = new List<string>();
+
+                foreach (var ext in extensions)
+                {
+                    files.AddRange(Directory.GetFiles(folderPath, ext));
+                }
+
+                int added = 0;
+                foreach (var file in files)
+                {
+                    if (!_selectedFiles.Contains(file))
+                    {
+                        _selectedFiles.Add(file);
+                        lstFiles.Items.Add(System.IO.Path.GetFileName(file));
+                        added++;
+                    }
+                }
+                MessageBox.Show($"Загружено файлов из папки: {added}");
+            }
+        }
+
+        private void BtnClearFiles_Click(object sender, RoutedEventArgs e)
+        {
+            _selectedFiles.Clear();
+            lstFiles.Items.Clear();
         }
     }
 }

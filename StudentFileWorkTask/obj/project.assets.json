@@ -1,7 +1,7 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
-    "net6.0-windows7.0": {
+    "net6.0-windows": {
       "MaterialDesignColors/5.3.2": {
         "type": "package",
         "compile": {
@@ -208,29 +208,24 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0-windows7.0": [
+    "net6.0-windows": [
       "MaterialDesignThemes >= 5.3.2"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gulnaz\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\kseni\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+      "projectUniqueName": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
       "projectName": "StudentFileWorkTask",
-      "projectPath": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
-      "packagesPath": "C:\\Users\\gulnaz\\.nuget\\packages\\",
-      "outputPath": "D:\\wpf\\StudentFileWorkTask\\StudentFileWorkTask\\obj\\",
+      "projectPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+      "packagesPath": "C:\\Users\\kseni\\.nuget\\packages\\",
+      "outputPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\gulnaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\kseni\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -241,7 +236,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0-windows7.0": {
+        "net6.0-windows": {
+          "framework": "net6.0-windows7.0",
           "targetAlias": "net6.0-windows",
           "projectReferences": {}
         }
@@ -256,10 +252,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
-      "net6.0-windows7.0": {
+      "net6.0-windows": {
+        "framework": "net6.0-windows7.0",
         "targetAlias": "net6.0-windows",
         "dependencies": {
           "MaterialDesignThemes": {
@@ -286,7 +283,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   },
@@ -298,7 +295,7 @@
       "message": "Пакет \"MaterialDesignColors 5.3.2\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net6.0-windows7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
       "libraryId": "MaterialDesignColors",
       "targetGraphs": [
-        "net6.0-windows7.0"
+        "net6.0-windows"
       ]
     }
   ]
