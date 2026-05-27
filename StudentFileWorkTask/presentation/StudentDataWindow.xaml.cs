@@ -111,17 +111,7 @@ namespace StudentFileWorkTask.presentation
 
             if (dialog.ShowDialog() == true)
             {
-                int added = 0;
-                foreach (var file in dialog.FileNames)
-                {
-                    if (!_selectedFiles.Contains(file))
-                    {
-                        _selectedFiles.Add(file);
-                        lstFiles.Items.Add(System.IO.Path.GetFileName(file));
-                        added++;
-                    }
-                }
-                MessageBox.Show($"Загружено файлов: {added}");
+                studentResultViewModel.AddFiles(dialog.FileNames);
             }
         }
 
@@ -134,32 +124,13 @@ namespace StudentFileWorkTask.presentation
             if (dialog.ShowDialog() == true)
             {
                 string folderPath = System.IO.Path.GetDirectoryName(dialog.FileName);
-                string[] extensions = { "*.xlsx", "*.xls", "*.csv" };
-                var files = new List<string>();
-
-                foreach (var ext in extensions)
-                {
-                    files.AddRange(Directory.GetFiles(folderPath, ext));
-                }
-
-                int added = 0;
-                foreach (var file in files)
-                {
-                    if (!_selectedFiles.Contains(file))
-                    {
-                        _selectedFiles.Add(file);
-                        lstFiles.Items.Add(System.IO.Path.GetFileName(file));
-                        added++;
-                    }
-                }
-                MessageBox.Show($"Загружено файлов из папки: {added}");
+                studentResultViewModel.AddFilesFromFolder(folderPath);
             }
         }
 
         private void BtnClearFiles_Click(object sender, RoutedEventArgs e)
         {
-            _selectedFiles.Clear();
-            lstFiles.Items.Clear();
+            studentResultViewModel.ClearFiles();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace StudentFileWorkTask.presentation
         private Template currentTemplate { get; set; }
         private bool IsFiltering = false;
         private IEnumerable<StudentResult> filtered = new List<StudentResult>();
-        private List<StudentResult> aggregated = new ();
+        private List<StudentResult> aggregated = new();
         private ObservableCollection<StudentResultFilter> _OptionList { get; set; }
         public ObservableCollection<StudentResultFilter> OptionList
         {
@@ -132,20 +132,20 @@ namespace StudentFileWorkTask.presentation
         }
 
         private Visibility _detailColumnsVisibility;
-        public  Visibility DetailColumnsVisibility
+        public Visibility DetailColumnsVisibility
         {
             get { return _detailColumnsVisibility; }
             set
             {
-                    _detailColumnsVisibility = value;
-                    OnPropertyChanged(nameof(DetailColumnsVisibility));
+                _detailColumnsVisibility = value;
+                OnPropertyChanged(nameof(DetailColumnsVisibility));
             }
         }
 
         public StudentResultViewModel()
         {
             currentTemplate = new Template(true, true);
-            GroupList = new ObservableCollection<Group> { new("9apo12"), new ("10po14"), new("9bpo15") };
+            GroupList = new ObservableCollection<Group> { new("9apo12"), new("10po14"), new("9bpo15") };
             StudentList = new ObservableCollection<Student> {
                 new("bidrisova", "gulnaz", "raisova", GroupList[0]),
                 new("aidrisovagul", "gulnaz", "raisova", GroupList[2]),
@@ -154,7 +154,7 @@ namespace StudentFileWorkTask.presentation
                 //new("aidrisovagul", "gulnaz", "raisova"),
                 //new("idrisova2", "gulnaz2", "raisova2")
             };
-            ThemeList = new ObservableCollection<Theme> { new("Логика"), new ("АМатематика") };
+            ThemeList = new ObservableCollection<Theme> { new("Логика"), new("АМатематика") };
             _questionList = new ObservableCollection<Question> { new(ThemeList[0], "vwhat is ur name1"), new(ThemeList[0], "awhat is ur name4"), new(ThemeList[1], "what is ur name12"), new(ThemeList[1], "bwhat is ur name13"), };
 
             List<StudentResult> resultList = new List<StudentResult>
@@ -194,7 +194,7 @@ namespace StudentFileWorkTask.presentation
             var isAllUnchecked = true;
             filtered = _InitialStudentResultList;
 
-            if (!IsDefaultggregationChecked )
+            if (!IsDefaultggregationChecked)
             {
                 UpdateDetailColumnsVisibility();
                 filtered = aggregated;
@@ -207,7 +207,7 @@ namespace StudentFileWorkTask.presentation
                     .Select(o => o.Option)
                     .ToList();
 
-                if(!selectedOptions.Any()) continue;
+                if (!selectedOptions.Any()) continue;
                 isAllUnchecked = false;
 
                 switch (filterGroup.FilterName)
@@ -251,7 +251,7 @@ namespace StudentFileWorkTask.presentation
                 currentList = filtered.ToList();
             }
 
-            if (!IsDefaultggregationChecked )
+            if (!IsDefaultggregationChecked)
             {
                 var result = currentList.GroupBy(result => new { result.Student, result.Question.Theme }).Select(r =>
                     new StudentResult(
@@ -284,7 +284,7 @@ namespace StudentFileWorkTask.presentation
             {
                 StudentResultList = new ObservableCollection<StudentResult>(currentList);
             }
-         
+
         }
 
         public List<StudentResultThemeSum> GetStudentResultThemeSummary()
@@ -357,6 +357,65 @@ namespace StudentFileWorkTask.presentation
         private void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+    
+        private List<string> _selectedFiles = new List<string>();
+        public List<string> SelectedFiles
+        {
+            get { return _selectedFiles; }
+            set { _selectedFiles = value; OnPropertyChanged(nameof(SelectedFiles)); }
+        }
+
+        private ObservableCollection<string> _fileList = new ObservableCollection<string>();
+        public ObservableCollection<string> FileList
+        {
+            get { return _fileList; }
+            set { _fileList = value; OnPropertyChanged(nameof(FileList)); }
+        }
+
+        public void AddFiles(string[] filePaths)
+        {
+            int added = 0;
+            foreach (var file in filePaths)
+            {
+                if (!_selectedFiles.Contains(file))
+                {
+                    _selectedFiles.Add(file);
+                    FileList.Add(System.IO.Path.GetFileName(file));
+                    added++;
+                }
+            }
+            if (added > 0)
+                MessageBox.Show($"Загружено файлов: {added}");
+        }
+
+        public void AddFilesFromFolder(string folderPath)
+        {
+            string[] extensions = { "*.xlsx", "*.xls", "*.csv" };
+            var files = new List<string>();
+            foreach (var ext in extensions)
+            {
+                files.AddRange(System.IO.Directory.GetFiles(folderPath, ext));
+            }
+
+            int added = 0;
+            foreach (var file in files)
+            {
+                if (!_selectedFiles.Contains(file))
+                {
+                    _selectedFiles.Add(file);
+                    FileList.Add(System.IO.Path.GetFileName(file));
+                    added++;
+                }
+            }
+            if (added > 0)
+                MessageBox.Show($"Загружено файлов из папки: {added}");
+        }
+
+        public void ClearFiles()
+        {
+            _selectedFiles.Clear();
+            FileList.Clear();
         }
     }
 }
