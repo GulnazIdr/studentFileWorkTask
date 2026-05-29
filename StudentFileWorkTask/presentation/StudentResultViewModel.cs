@@ -3,6 +3,9 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using StudentFileWorkTask.data;
+using OfficeOpenXml;
+using System.IO;
+using System.Text.Json;
 
 namespace StudentFileWorkTask.presentation
 {
@@ -144,6 +147,7 @@ namespace StudentFileWorkTask.presentation
 
         public StudentResultViewModel()
         {
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
             currentTemplate = new Template(true, true);
             GroupList = new ObservableCollection<Group> { new("9apo12"), new("10po14"), new("9bpo15") };
             StudentList = new ObservableCollection<Student> {
@@ -416,6 +420,117 @@ namespace StudentFileWorkTask.presentation
         {
             _selectedFiles.Clear();
             FileList.Clear();
+        }
+        public List<string> GetHeadersFromFile(string filePath)
+        {
+            var headers = new List<string>();
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int colCount = worksheet.Dimension.Columns;
+
+                for (int col = 1; col <= colCount; col++)
+                {
+                    var header = worksheet.Cells[1, col].Text;
+                    headers.Add(string.IsNullOrEmpty(header) ? $"Column{col}" : header);
+                }
+            }
+            return headers;
+        }
+
+        public void LoadFileWithMapping(string filePath, MappingTemplate template)
+        {
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int colCount = worksheet.Dimension.Columns;
+
+                var headers = new List<string>();
+                for (int col = 1; col <= colCount; col++)
+                {
+                    headers.Add(worksheet.Cells[1, col].Text);
+                }
+
+                int studentIdx = headers.IndexOf(template.StudentColumn);
+                int groupIdx = headers.IndexOf(template.GroupColumn);
+                int dateIdx = headers.IndexOf(template.DateColumn);
+
+                GroupList.Clear();
+                StudentList.Clear();
+                ThemeList.Clear();
+                _questionList.Clear();
+
+                var newResults = new List<StudentResult>();
+                var groupsDict = new Dictionary<string, Group>();
+                var studentsDict = new Dictionary<string, Student>();
+                var themesDict = new Dictionary<string, Theme>();
+                var questionsDict = new Dictionary<string, Question>();
+
+                for (int row = 2; row <= rowCount; row++) 
+                {
+                    string studentName = studentIdx >= 0 ? worksheet.Cells[row, studentIdx + 1].Text : "";
+                    string groupName = groupIdx >= 0 ? worksheet.Cells[row, groupIdx + 1].Text : "";
+                    string dateStr = dateIdx >= 0 ? worksheet.Cells[row, dateIdx + 1].Text : "";
+
+                    if (string.IsNullOrEmpty(studentName)) continue;
+
+                    var parts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    string surname = parts.Length > 0 ? parts[0] : "";
+                    string name = parts.Length > 1 ? parts[1] : "";
+                    string patronymic = parts.Length > 2 ? parts[2] : "";
+
+                    if (!groupsDict.ContainsKey(groupName))
+                        groupsDict[groupName] = new Group(string.IsNullOrEmpty(groupName) ? "Без группы" : groupName);
+
+                    string studentKey = $"{surname}|{name}|{patronymic}";
+                    if (!studentsDict.ContainsKey(studentKey))
+                        studentsDict[studentKey] = new Student(surname, name, patronymic, groupsDict[groupName]);
+
+                    DateOnly? date = null;
+                    if (DateTime.TryParse(dateStr, out var dt))
+                        date = DateOnly.FromDateTime(dt);
+
+                    for (int q = 0; q < template.QuestionColumns.Count; q++)
+                    {
+                        string questionCol = template.QuestionColumns[q];
+                        string scoreCol = template.ScoreColumns.Count > q ? template.ScoreColumns[q] : "";
+
+                        int qIdx = headers.IndexOf(questionCol);
+                        int sIdx = headers.IndexOf(scoreCol);
+
+                        if (qIdx < 0 || sIdx < 0) continue;
+
+                        string themeName = questionCol;
+                        string questionText = worksheet.Cells[row, qIdx + 1].Text;
+                        double score = double.TryParse(worksheet.Cells[row, sIdx + 1].Text, out var val) ? val : 0;
+
+                        if (!themesDict.ContainsKey(themeName))
+                            themesDict[themeName] = new Theme(themeName);
+
+                        string questionKey = $"{themeName}|{questionText}";
+                        if (!questionsDict.ContainsKey(questionKey))
+                            questionsDict[questionKey] = new Question(themesDict[themeName], questionText);
+
+                        newResults.Add(new StudentResult(studentsDict[studentKey], questionsDict[questionKey], score, date));
+                    }
+                }
+
+                foreach (var g in groupsDict.Values) GroupList.Add(g);
+                foreach (var s in studentsDict.Values) StudentList.Add(s);
+                foreach (var t in themesDict.Values) ThemeList.Add(t);
+                foreach (var q in questionsDict.Values) _questionList.Add(q);
+
+                _InitialStudentResultList = new ObservableCollection<StudentResult>(newResults);
+                SortInitialList(newResults);
+                StudentResultList = _InitialStudentResultList;
+
+                OptionList.Clear();
+                AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
+                AddFilterIfExists("Студенты", StudentList, s => s.Surname);
+                if (GroupList.Any())
+                    AddFilterIfExists("Группы", GroupList, g => g.GroupName);
+            }
         }
     }
 }

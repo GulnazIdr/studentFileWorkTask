@@ -111,7 +111,16 @@ namespace StudentFileWorkTask.presentation
 
             if (dialog.ShowDialog() == true)
             {
-                studentResultViewModel.AddFiles(dialog.FileNames);
+                foreach (var file in dialog.FileNames)
+                {
+                    var headers = studentResultViewModel.GetHeadersFromFile(file);
+                    var mappingWindow = new ColumnMappingWindow(headers);
+
+                    if (mappingWindow.ShowDialog() == true)
+                    {
+                        studentResultViewModel.LoadFileWithMapping(file, mappingWindow.ResultTemplate);
+                    }
+                }
             }
         }
 
