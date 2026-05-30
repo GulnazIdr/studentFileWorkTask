@@ -1,19 +1,21 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.Win32;
+using StudentFileWorkTask.data;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using StudentFileWorkTask.data;
-using Microsoft.Win32;
-using System.IO;
+using System.Xml.Linq;
 
 namespace StudentFileWorkTask.presentation
 {
@@ -140,6 +142,48 @@ namespace StudentFileWorkTask.presentation
         private void BtnClearFiles_Click(object sender, RoutedEventArgs e)
         {
             studentResultViewModel.ClearFiles();
+        }
+        private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog
+            {
+                Filter = "PDF files|*.pdf",
+                FileName = "Отчёт_студентов.pdf"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                using (var doc = new Document(PageSize.A4.Rotate()))
+                {
+                    PdfWriter.GetInstance(doc, new FileStream(dialog.FileName, FileMode.Create));
+                    doc.Open();
+
+                    var font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+
+                    var title = new Paragraph("Отчёт по результатам тестирования");
+                    title.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(title);
+                    doc.Add(new Paragraph("\n"));
+
+                    var table = new PdfPTable(5);
+                    table.WidthPercentage = 100;
+
+                    int rowNum = 1;
+                    foreach (var item in studentResultViewModel.StudentResultList)
+                    {
+                        table.AddCell(new PdfPCell(new Phrase(rowNum.ToString(), font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Student.Surname, font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Student.Group?.GroupName ?? "", font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Question.Theme?.ThemeName ?? "", font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Score.ToString(), font)));
+                        rowNum++;
+                    }
+
+                    doc.Add(table);
+                }
+
+                MessageBox.Show("PDF сохранён!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }

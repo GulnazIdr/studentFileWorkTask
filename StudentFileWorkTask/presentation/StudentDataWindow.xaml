@@ -188,6 +188,11 @@ Source={x:Reference columnElement}}"
                         Click="excelCreateBtn_Click" 
                         Style="{StaticResource RoundButton}"
                         HorizontalAlignment="Left"/>
+                <Button x:Name="pdfExportBtn" 
+                        Content="Экспорт в PDF" 
+                        Click="PdfExportBtn_Click" 
+                        Style="{StaticResource RoundButton}"
+                        HorizontalAlignment="Left" Margin="0,10,0,0"/>
             </StackPanel>
         </Border>
     </Grid>
