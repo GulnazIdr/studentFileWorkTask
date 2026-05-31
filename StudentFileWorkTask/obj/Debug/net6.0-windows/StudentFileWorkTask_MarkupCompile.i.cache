@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\
 StudentFileWorkTask
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-D:\wpf\StudentFileWorkTask\StudentFileWorkTask\App.xaml
-2-2138766342
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\App.xaml
+1749155613
 
-17-1344234966
-1961264027693
-MainWindow.xaml;presentation\StudentDataWindow.xaml;
+17-508295804
+203-1627668181
+presentation\StudentDataWindow.xaml;
 
 True
 

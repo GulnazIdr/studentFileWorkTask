@@ -6,10 +6,11 @@
     <Application.Resources>
         <Style x:Key="RoundButton" TargetType="Button">
             <Setter Property="Background" Value="#AACDDC"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Width" Value="220"/>
+            <Setter Property="Width" Value="230"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Template">
                 <Setter.Value>
