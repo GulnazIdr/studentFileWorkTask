@@ -7,7 +7,7 @@
         xmlns:materialDesign="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
         mc:Ignorable="d"
         Background="#F5F5F5"
-        Title="Анализ результатов студентов" Height="600" Width="1000" WindowState="Maximized">
+        Title="Анализ результатов студентов" Height="600" Width="1000">
     
     <Grid Margin="25">
         <Grid.ColumnDefinitions>
@@ -140,7 +140,7 @@ Source={x:Reference columnElement}}"
                 </Border>
                 
                 <Button x:Name="excelCreateBtn" 
-                        Content="Сформировать отчёт по группам" 
+                        Content="Сформировать отчет по группам" 
                         Click="excelCreateBtn_Click" 
                         Style="{StaticResource RoundButton}"
                         HorizontalAlignment="Left"/>
