@@ -1,4 +1,4 @@
-﻿using ClosedXML.Excel;
+using ClosedXML.Excel;
 using Microsoft.Win32;
 using StudentFileWorkTask.data;
 using StudentFileWorkTask.presentation;
@@ -33,27 +33,6 @@ namespace StudentFileWorkTask.export
             {
                 GenerateReport(saveFileDialog.FileName);
                 MessageBox.Show("Отчет успешно создан!");
-            }
-        }
-
-        public void UpdateExistingReport()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "Excel files (*.xlsx)|*.xlsx"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                try
-                {
-                    UpdateReport(openFileDialog.FileName);
-                    MessageBox.Show("Отчет успешно обновлен!");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Ошибка при обновлении отчета: {ex.Message}");
-                }
             }
         }
 
@@ -295,94 +274,6 @@ namespace StudentFileWorkTask.export
             }
 
             worksheet.Columns().AdjustToContents();
-        }
-
-        private void UpdateReport(string filePath)
-        {
-            using (var workbook = new XLWorkbook(filePath))
-            {
-                var existingData = LoadExistingData(workbook);
-                var newData = GetFilteredData();
-                var mergedData = MergeData(existingData, newData);
-                var sheetsToRemove = workbook.Worksheets.Where(w =>
-                    w.Name == "Все группы" ||
-                    w.Name == "Сводка по темам" ||
-                    w.Name == "Статистика по вопросам" ||
-                    (w.Name != "Все группы" && w.Name != "Сводка по темам" && w.Name != "Статистика по вопросам"));
-
-                foreach (var sheet in sheetsToRemove.ToList())
-                {
-                    sheet.Delete();
-                }
-
-                CreateAllGroupsSheet(workbook, mergedData);
-                CreateGroupSheets(workbook, mergedData);
-                CreateThemeSummarySheet(workbook, mergedData);
-                CreateQuestionsStatisticsSheet(workbook, mergedData);
-
-                workbook.Save();
-            }
-        }
-
-        private List<StudentResult> LoadExistingData(XLWorkbook workbook)
-        {
-            var existingData = new List<StudentResult>();
-
-            var worksheet = workbook.Worksheet("Все группы");
-            if (worksheet != null)
-            {
-                var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 1;
-                for (int row = 2; row <= lastRow; row++)
-                {
-                    try
-                    {
-                        var groupName = worksheet.Cell(row, 1).GetString();
-                        var studentName = worksheet.Cell(row, 2).GetString();
-                        var dateStr = worksheet.Cell(row, 3).GetString();
-                        var theme = worksheet.Cell(row, 4).GetString();
-                        var score = worksheet.Cell(row, 5).GetDouble();
-                        var group = string.IsNullOrEmpty(groupName) ? null : new Group(groupName);
-                        var student = new Student(studentName, "", "", group);
-                        var themeObj = new Theme(theme);
-                        var question = new Question(themeObj, "");
-                        DateOnly? date = null;
-                        if (!string.IsNullOrEmpty(dateStr))
-                        {
-                            if (DateOnly.TryParse(dateStr, out DateOnly parsedDate))
-                                date = parsedDate;
-                        }
-
-                        existingData.Add(new StudentResult(student, question, score, date));
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Ошибка загрузки строки {row}: {ex.Message}");
-                    }
-                }
-            }
-
-            return existingData;
-        }
-
-        private List<StudentResult> MergeData(List<StudentResult> existingData, List<StudentResult> newData)
-        {
-            var merged = new List<StudentResult>(existingData);
-
-            foreach (var newItem in newData)
-            {
-                bool isDuplicate = existingData.Any(e =>
-                    e.Student.Surname == newItem.Student.Surname &&
-                    e.Student.Name == newItem.Student.Name &&
-                    e.Date == newItem.Date &&
-                    e.Question.Theme.ThemeName == newItem.Question.Theme.ThemeName &&
-                    e.Question.Quest == newItem.Question.Quest);
-
-                if (!isDuplicate)
-                {
-                    merged.Add(newItem);
-                }
-            }
-            return merged;
         }
     }
 }
