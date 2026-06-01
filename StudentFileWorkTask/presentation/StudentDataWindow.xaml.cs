@@ -69,20 +69,7 @@ namespace StudentFileWorkTask.presentation
 
         private void excelCreateBtn_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show(
-                "Выберите действие:\nДа - Создать новый отчет\nНет - Обновить существующий",
-                "Экспорт в Excel",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                exportService.CreateNewReport();
-            }
-            else if (result == MessageBoxResult.No)
-            {
-                exportService.UpdateExistingReport();
-            }
+            exportService.CreateNewReport();
         }
 
         private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
