@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {}
+    "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {}
   },
   "projects": {
-    "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {
+    "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+        "projectUniqueName": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
         "projectName": "StudentFileWorkTask",
-        "projectPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
-        "packagesPath": "C:\\Users\\kseni\\.nuget\\packages\\",
-        "outputPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
+        "projectPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\StudentFileWorkTask.csproj",
+        "packagesPath": "C:\\Users\\cxnts\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\kseni\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cxnts\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,11 +26,11 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0-windows": {
-            "framework": "net6.0-windows7.0",
+          "net6.0-windows7.0": {
             "targetAlias": "net6.0-windows",
             "projectReferences": {}
           }
@@ -41,13 +45,16 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.300"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net6.0-windows": {
-          "framework": "net6.0-windows7.0",
+        "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.0, )"
+            },
             "EPPlus": {
               "target": "Package",
               "version": "[6.2.10, )"
@@ -80,7 +87,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -2,6 +2,7 @@
 using iTextSharp.text.pdf;
 using Microsoft.Win32;
 using StudentFileWorkTask.data;
+using StudentFileWorkTask.export;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,12 +24,14 @@ namespace StudentFileWorkTask.presentation
     {
         StudentResultViewModel studentResultViewModel;
         private List<string> _selectedFiles = new List<string>();
+        private ExcelExportService exportService;
 
         public StudentDataWindow()
         {
             InitializeComponent();
             studentResultViewModel = new StudentResultViewModel();
             DataContext = studentResultViewModel;
+            exportService = new ExcelExportService(studentResultViewModel);
         }
 
         private void filterCheck_Checked(object sender, RoutedEventArgs e)
@@ -66,43 +69,20 @@ namespace StudentFileWorkTask.presentation
 
         private void excelCreateBtn_Click(object sender, RoutedEventArgs e)
         {
-            var dataGrid = new DataGrid();
-            dataGrid.AutoGenerateColumns = false;
-            dataGrid.Margin = new Thickness(10);
-            dataGrid.Height = 400;
+            var result = MessageBox.Show(
+                "Выберите действие:\nДа - Создать новый отчет\nНет - Обновить существующий",
+                "Экспорт в Excel",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
 
-            List<Theme> themeList = studentResultViewModel.ThemeList.ToList();
-            dataGrid.Columns.Add(new DataGridTextColumn()
+            if (result == MessageBoxResult.Yes)
             {
-                Header = "№",
-                Binding = new Binding("Index")
-            });
-            dataGrid.Columns.Add(new DataGridTextColumn()
-            {
-                Header = "ФИО",
-                Binding = new Binding("Student.Surname")
-            });
-
-            for (var i = 0; i < themeList.Count; i++)
-            {
-                var theme = themeList[i].ThemeName;
-                dataGrid.Columns.Add(new DataGridTextColumn()
-                {
-                    Header = theme,
-                    Binding = new Binding($"[{theme}]")
-                });
+                exportService.CreateNewReport();
             }
-
-            dataGrid.Columns.Add(new DataGridTextColumn()
+            else if (result == MessageBoxResult.No)
             {
-                Header = "Сумма баллов",
-                Binding = new Binding("ScoreSummary")
-            });
-
-            List<StudentResultThemeSum> studentResultThemeSumList = studentResultViewModel.GetStudentResultThemeSummary();
-            dataGrid.ItemsSource = studentResultThemeSumList;
-
-            dataPanel.Children.Add(dataGrid);
+                exportService.UpdateExistingReport();
+            }
         }
 
         private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
