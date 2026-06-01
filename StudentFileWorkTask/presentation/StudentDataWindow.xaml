@@ -7,7 +7,7 @@
         xmlns:materialDesign="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
         mc:Ignorable="d"
         Background="#F5F5F5"
-        Title="Анализ результатов студентов" Height="600" Width="1000">
+        Title="Анализ результатов студентов" Height="600" Width="1000" WindowState="Maximized">
     
     <Grid Margin="25">
         <Grid.ColumnDefinitions>
@@ -84,7 +84,7 @@
                 </Border>
                 <TextBlock Text="Фильтры" 
                            Style="{StaticResource SectionHeaderStyle}"/>
-                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="200">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="330">
 
                     <ListBox Name="studentFilterListBox" ItemsSource="{Binding OptionList}"   ScrollViewer.VerticalScrollBarVisibility="Disabled">
                         <ListBox.ItemTemplate>

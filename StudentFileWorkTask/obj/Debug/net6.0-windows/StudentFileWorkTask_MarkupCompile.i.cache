@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\
 StudentFileWorkTask
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
-D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\App.xaml
-3869847569
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\App.xaml
+2-537197772
 
-191162768485
-211-1476304980
-MainWindow.xaml;presentation\ColumnMappingWindow.xaml;presentation\StudentDataWindow.xaml;
+191998707647
+218-1705697660
+presentation\ColumnMappingWindow.xaml;presentation\StudentDataWindow.xaml;
 
 False
 
