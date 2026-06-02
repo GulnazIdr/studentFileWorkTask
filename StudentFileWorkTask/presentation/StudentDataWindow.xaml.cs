@@ -1,28 +1,37 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.Win32;
+using StudentFileWorkTask.data;
+using StudentFileWorkTask.export;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using StudentFileWorkTask.data;
+using System.Xml.Linq;
 
 namespace StudentFileWorkTask.presentation
 {
     public partial class StudentDataWindow : Window
     {
         StudentResultViewModel studentResultViewModel;
+        private List<string> _selectedFiles = new List<string>();
+        private ExcelExportService exportService;
+
         public StudentDataWindow()
         {
             InitializeComponent();
             studentResultViewModel = new StudentResultViewModel();
             DataContext = studentResultViewModel;
+            exportService = new ExcelExportService(studentResultViewModel);
         }
 
         private void filterCheck_Checked(object sender, RoutedEventArgs e)
@@ -56,48 +65,92 @@ namespace StudentFileWorkTask.presentation
             }
 
             studentResultViewModel.OnAggregated();
-
         }
 
         private void excelCreateBtn_Click(object sender, RoutedEventArgs e)
         {
-            var dataGrid = new DataGrid();
-            dataGrid.AutoGenerateColumns = false;
-            dataGrid.Margin = new Thickness(10);
-            dataGrid.Height = 400;
+            exportService.CreateNewReport();
+        }
 
-            List<Theme> themeList = studentResultViewModel.ThemeList.ToList();
-            dataGrid.Columns.Add(new DataGridTextColumn()
-            {
-                Header = "№",
-                Binding = new Binding("Index")
-            });
-            dataGrid.Columns.Add(new DataGridTextColumn()
-            {
-                Header = "ФИО",
-                Binding = new Binding("Student.Surname")
-            });
+        private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+            dialog.Multiselect = true;
+            dialog.Filter = "Excel files|*.xlsx;*.xls|CSV files|*.csv|All files|*.*";
 
-            for (var i = 0; i < themeList.Count; i++)
+            if (dialog.ShowDialog() == true)
             {
-                var theme = themeList[i].ThemeName;
-                dataGrid.Columns.Add(new DataGridTextColumn()
+                foreach (var file in dialog.FileNames)
                 {
-                    Header = theme,
-                    Binding = new Binding($"[{theme}]")
-                });
+                    var headers = studentResultViewModel.GetHeadersFromFile(file);
+                    var mappingWindow = new ColumnMappingWindow(headers);
+
+                    if (mappingWindow.ShowDialog() == true)
+                    {
+                        studentResultViewModel.LoadFileWithMapping(file, mappingWindow.ResultTemplate);
+                    }
+                }
             }
+        }
 
-            dataGrid.Columns.Add(new DataGridTextColumn()
+        private void BtnSelectFolder_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Title = "Выберите любой файл в нужной папке";
+            dialog.FileName = "выберите файл";
+
+            if (dialog.ShowDialog() == true)
             {
-                Header = "Сумма баллов",
-                Binding = new Binding("ScoreSummary")
-            });
+                string folderPath = System.IO.Path.GetDirectoryName(dialog.FileName);
+                studentResultViewModel.AddFilesFromFolder(folderPath);
+            }
+        }
 
-            List<StudentResultThemeSum> studentResultThemeSumList = studentResultViewModel.GetStudentResultThemeSummary();
-            dataGrid.ItemsSource = studentResultThemeSumList;    
+        private void BtnClearFiles_Click(object sender, RoutedEventArgs e)
+        {
+            studentResultViewModel.ClearFiles();
+        }
+        private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SaveFileDialog
+            {
+                Filter = "PDF files|*.pdf",
+                FileName = "Отчёт_студентов.pdf"
+            };
 
-            dataPanel.Children.Add(dataGrid);
+            if (dialog.ShowDialog() == true)
+            {
+                using (var doc = new Document(PageSize.A4.Rotate()))
+                {
+                    PdfWriter.GetInstance(doc, new FileStream(dialog.FileName, FileMode.Create));
+                    doc.Open();
+
+                    var font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+
+                    var title = new Paragraph("Отчёт по результатам тестирования");
+                    title.Alignment = Element.ALIGN_CENTER;
+                    doc.Add(title);
+                    doc.Add(new Paragraph("\n"));
+
+                    var table = new PdfPTable(5);
+                    table.WidthPercentage = 100;
+
+                    int rowNum = 1;
+                    foreach (var item in studentResultViewModel.StudentResultList)
+                    {
+                        table.AddCell(new PdfPCell(new Phrase(rowNum.ToString(), font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Student.Surname, font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Student.Group?.GroupName ?? "", font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Question.Theme?.ThemeName ?? "", font)));
+                        table.AddCell(new PdfPCell(new Phrase(item.Score.ToString(), font)));
+                        rowNum++;
+                    }
+
+                    doc.Add(table);
+                }
+
+                MessageBox.Show("PDF сохранён!", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
 }
