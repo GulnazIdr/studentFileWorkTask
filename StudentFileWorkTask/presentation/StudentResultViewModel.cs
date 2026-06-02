@@ -149,40 +149,14 @@ namespace StudentFileWorkTask.presentation
         {
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
             currentTemplate = new Template(true, true);
-            GroupList = new ObservableCollection<Group> { new("9apo12"), new("10po14"), new("9bpo15") };
-            StudentList = new ObservableCollection<Student> {
-                new("bidrisova", "gulnaz", "raisova", GroupList[0]),
-                new("aidrisovagul", "gulnaz", "raisova", GroupList[2]),
-                new("idrisova2", "gulnaz2", "raisova2", GroupList[1])
-                //new("bidrisova", "gulnaz", "raisova"),
-                //new("aidrisovagul", "gulnaz", "raisova"),
-                //new("idrisova2", "gulnaz2", "raisova2")
-            };
-            ThemeList = new ObservableCollection<Theme> { new("Логика"), new("АМатематика") };
-            _questionList = new ObservableCollection<Question> { new(ThemeList[0], "vwhat is ur name1"), new(ThemeList[0], "awhat is ur name4"), new(ThemeList[1], "what is ur name12"), new(ThemeList[1], "bwhat is ur name13"), };
 
-            List<StudentResult> resultList = new List<StudentResult>
-            {
-                new(StudentList[0], _questionList[1], 1, DateOnly.MaxValue),
-                new(StudentList[1], _questionList[0], 1, DateOnly.MaxValue),
-                new(StudentList[1], _questionList[1], 0, DateOnly.MaxValue),
-                new(StudentList[0], _questionList[2], 1, DateOnly.MaxValue),
-                new(StudentList[1], _questionList[2], 1, DateOnly.MaxValue),
-                new(StudentList[2], _questionList[0], 1, DateOnly.MaxValue),
-                new(StudentList[2], _questionList[1], 1, DateOnly.MaxValue),
-                new(StudentList[2], _questionList[2], 1, DateOnly.MaxValue)
-                //new(StudentList[0], _questionList[1], 1),
-                //new(StudentList[1], _questionList[0], 1),
-                //new(StudentList[1], _questionList[1], 0),
-                //new(StudentList[0], _questionList[2], 1),
-                //new(StudentList[1], _questionList[2], 1),
-                //new(StudentList[2], _questionList[0], 1),
-                //new(StudentList[2], _questionList[1], 1),
-                //new(StudentList[2], _questionList[2], 1)
-            };
-
-            SortInitialList(resultList);
-            StudentResultList = _InitialStudentResultList;
+            GroupList = new ObservableCollection<Group>();
+            StudentList = new ObservableCollection<Student>();
+            ThemeList = new ObservableCollection<Theme>();
+            _questionList = new ObservableCollection<Question>();
+            _InitialStudentResultList = new ObservableCollection<StudentResult>();
+            StudentResultList = new ObservableCollection<StudentResult>();
+            OptionList = new ObservableCollection<StudentResultFilter>();
 
             OptionList = new ObservableCollection<StudentResultFilter>();
             AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
