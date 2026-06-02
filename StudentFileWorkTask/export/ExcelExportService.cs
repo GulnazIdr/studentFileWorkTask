@@ -264,7 +264,8 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var statistics = data
-                .GroupBy(r => new { Theme = r.Question.Theme?.ThemeName ?? "Без темы", Question = r.Question.Quest ?? "Без названия" })
+                .Where(r => !string.IsNullOrWhiteSpace(r.Question.Quest)) // Исключаем вопросы без названия
+                .GroupBy(r => new { Theme = r.Question.Theme?.ThemeName ?? "Без темы", Question = r.Question.Quest })
                 .Select(g => new
                 {
                     Theme = g.Key.Theme,
@@ -285,10 +286,18 @@ namespace StudentFileWorkTask.export
                 worksheet.Cell(row, 1).Value = stat.Theme;
                 worksheet.Cell(row, 2).Value = stat.Question;
                 worksheet.Cell(row, 3).Value = stat.CorrectAnswers;
+                worksheet.Cell(row, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell(row, 4).Value = stat.TotalAnswered;
+                worksheet.Cell(row, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Cell(row, 5).Value = Math.Round(stat.Percentage, 1);
                 worksheet.Cell(row, 5).Style.NumberFormat.Format = "0.0";
+                worksheet.Cell(row, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 row++;
+            }
+
+            if (row == 2)
+            {
+                worksheet.Cell(2, 1).Value = "Нет данных для отображения";
             }
 
             worksheet.Columns().AdjustToContents();
