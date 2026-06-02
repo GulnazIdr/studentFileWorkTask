@@ -48,10 +48,9 @@ namespace StudentFileWorkTask.export
                 {
                     var existingData = LoadExistingData(openFileDialog.FileName);
                     var newData = _viewModel.StudentResultList.ToList();
-
                     var mergedData = MergeData(existingData, newData);
+                    UpdateExistingFile(openFileDialog.FileName, mergedData);
 
-                    GenerateReportWithData(openFileDialog.FileName, mergedData);
                     MessageBox.Show("Отчет успешно обновлен!");
                 }
                 catch (Exception ex)
@@ -59,6 +58,73 @@ namespace StudentFileWorkTask.export
                     MessageBox.Show($"Ошибка при обновлении отчета: {ex.Message}");
                 }
             }
+        }
+
+        private void UpdateExistingFile(string filePath, List<StudentResult> data)
+        {
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                var sheetsToRemove = workbook.Worksheets.Where(w => w.Name != "Детальные данные").ToList();
+                foreach (var sheet in sheetsToRemove)
+                {
+                    workbook.Worksheet(sheet.Name).Delete();
+                }
+
+                if (_viewModel.IsDefaultggregationChecked)
+                {
+                    CreateAllGroupsSheetDetailed(workbook, data);
+                    CreateGroupSheetsDetailed(workbook, data);
+                }
+                else
+                {
+                    CreateAllGroupsSheetAggregated(workbook, data);
+                    CreateGroupSheetsAggregated(workbook, data);
+                }
+
+                CreateQuestionsStatisticsSheet(workbook, data);
+                UpdateDetailedDataSheet(workbook, data);
+
+                workbook.Save();
+            }
+        }
+
+        private void UpdateDetailedDataSheet(XLWorkbook workbook, List<StudentResult> data)
+        {
+            var worksheet = workbook.Worksheet("Детальные данные");
+            if (worksheet == null)
+            {
+                worksheet = workbook.Worksheets.Add("Детальные данные");
+                worksheet.Hide();
+            }
+            else
+            {
+                worksheet.Rows(2, worksheet.LastRowUsed()?.RowNumber() ?? 2).Delete();
+            }
+
+            worksheet.Cell(1, 1).Value = "Группа";
+            worksheet.Cell(1, 2).Value = "Фамилия";
+            worksheet.Cell(1, 3).Value = "Имя";
+            worksheet.Cell(1, 4).Value = "Отчество";
+            worksheet.Cell(1, 5).Value = "Дата";
+            worksheet.Cell(1, 6).Value = "Тема";
+            worksheet.Cell(1, 7).Value = "Вопрос";
+            worksheet.Cell(1, 8).Value = "Балл";
+
+            int row = 2;
+            foreach (var item in data)
+            {
+                worksheet.Cell(row, 1).Value = item.Student.Group?.GroupName ?? "Без группы";
+                worksheet.Cell(row, 2).Value = item.Student.Surname;
+                worksheet.Cell(row, 3).Value = item.Student.Name;
+                worksheet.Cell(row, 4).Value = item.Student.Patronymic;
+                worksheet.Cell(row, 5).Value = item.Date?.ToString("dd.MM.yyyy") ?? "";
+                worksheet.Cell(row, 6).Value = item.Question.Theme?.ThemeName ?? "Без темы";
+                worksheet.Cell(row, 7).Value = item.Question.Quest ?? "Без вопроса";
+                worksheet.Cell(row, 8).Value = item.Score;
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
         }
 
         public void GenerateReport(string filePath)
@@ -71,6 +137,8 @@ namespace StudentFileWorkTask.export
         {
             using (var workbook = new XLWorkbook())
             {
+                CreateDetailedDataSheet(workbook, data);
+
                 if (_viewModel.IsDefaultggregationChecked)
                 {
                     CreateAllGroupsSheetDetailed(workbook, data);
@@ -88,46 +156,95 @@ namespace StudentFileWorkTask.export
             }
         }
 
+        private void CreateDetailedDataSheet(XLWorkbook workbook, List<StudentResult> data)
+        {
+            var worksheet = workbook.Worksheets.Add("Детальные данные");
+            worksheet.Hide();
+
+            worksheet.Cell(1, 1).Value = "Группа";
+            worksheet.Cell(1, 2).Value = "Фамилия";
+            worksheet.Cell(1, 3).Value = "Имя";
+            worksheet.Cell(1, 4).Value = "Отчество";
+            worksheet.Cell(1, 5).Value = "Дата";
+            worksheet.Cell(1, 6).Value = "Тема";
+            worksheet.Cell(1, 7).Value = "Вопрос";
+            worksheet.Cell(1, 8).Value = "Балл";
+
+            int row = 2;
+            foreach (var item in data)
+            {
+                worksheet.Cell(row, 1).Value = item.Student.Group?.GroupName ?? "Без группы";
+                worksheet.Cell(row, 2).Value = item.Student.Surname;
+                worksheet.Cell(row, 3).Value = item.Student.Name;
+                worksheet.Cell(row, 4).Value = item.Student.Patronymic;
+                worksheet.Cell(row, 5).Value = item.Date?.ToString("dd.MM.yyyy") ?? "";
+                worksheet.Cell(row, 6).Value = item.Question.Theme?.ThemeName ?? "Без темы";
+                worksheet.Cell(row, 7).Value = item.Question.Quest ?? "Без вопроса";
+                worksheet.Cell(row, 8).Value = item.Score;
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
+        }
+
         private List<StudentResult> LoadExistingData(string filePath)
         {
-            var existingResults = new List<StudentResult>();
+            var results = new List<StudentResult>();
+            var groupsDict = new Dictionary<string, Group>();
+            var studentsDict = new Dictionary<string, Student>();
+            var themesDict = new Dictionary<string, Theme>();
+            var questionsDict = new Dictionary<string, Question>();
 
             using (var workbook = new XLWorkbook(filePath))
             {
-                var worksheet = workbook.Worksheet("Все группы");
-                if (worksheet == null) return existingResults;
+                var worksheet = workbook.Worksheet("Детальные данные");
+                if (worksheet == null) return results;
 
                 var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 1;
 
                 for (int row = 2; row <= lastRow; row++)
                 {
                     var groupName = worksheet.Cell(row, 1).GetString();
-                    var studentName = worksheet.Cell(row, 2).GetString();
-                    var dateStr = worksheet.Cell(row, 3).GetString();
-                    var themeName = worksheet.Cell(row, 4).GetString();
-                    var score = worksheet.Cell(row, 5).GetDouble();
+                    var surname = worksheet.Cell(row, 2).GetString();
+                    var name = worksheet.Cell(row, 3).GetString();
+                    var patronymic = worksheet.Cell(row, 4).GetString();
+                    var dateStr = worksheet.Cell(row, 5).GetString();
+                    var themeName = worksheet.Cell(row, 6).GetString();
+                    var questionText = worksheet.Cell(row, 7).GetString();
+                    var score = worksheet.Cell(row, 8).GetDouble();
 
-                    if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(themeName)) continue;
+                    if (string.IsNullOrEmpty(surname) || string.IsNullOrEmpty(themeName)) continue;
 
-                    var nameParts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    string surname = nameParts.Length > 0 ? nameParts[0] : "";
-                    string name = nameParts.Length > 1 ? nameParts[1] : "";
-                    string patronymic = nameParts.Length > 2 ? nameParts[2] : "";
+                    if (!groupsDict.ContainsKey(groupName))
+                        groupsDict[groupName] = new Group(string.IsNullOrEmpty(groupName) ? "Без группы" : groupName);
 
-                    var group = new Group(string.IsNullOrEmpty(groupName) ? "Без группы" : groupName);
-                    var student = new Student(surname, name, patronymic, group);
-                    var theme = new Theme(themeName);
-                    var question = new Question(theme);
+                    string studentKey = $"{surname}|{name}|{patronymic}";
+                    if (!studentsDict.ContainsKey(studentKey))
+                        studentsDict[studentKey] = new Student(surname, name, patronymic, groupsDict[groupName]);
+
+                    if (!themesDict.ContainsKey(themeName))
+                        themesDict[themeName] = new Theme(themeName);
+
+                    string questionKey = $"{themeName}|{questionText}";
+                    if (!questionsDict.ContainsKey(questionKey))
+                        questionsDict[questionKey] = new Question(themesDict[themeName], questionText);
 
                     DateOnly? date = null;
-                    if (DateTime.TryParse(dateStr, out var dt))
-                        date = DateOnly.FromDateTime(dt);
+                    if (!string.IsNullOrEmpty(dateStr))
+                    {
+                        if (DateTime.TryParse(dateStr, out var dt))
+                            date = DateOnly.FromDateTime(dt);
+                        else if (DateTime.TryParseExact(dateStr, new[] { "dd.MM.yyyy", "MM/dd/yyyy", "yyyy-MM-dd" },
+                                 System.Globalization.CultureInfo.InvariantCulture,
+                                 System.Globalization.DateTimeStyles.None, out var dt2))
+                            date = DateOnly.FromDateTime(dt2);
+                    }
 
-                    existingResults.Add(new StudentResult(student, question, score, date));
+                    results.Add(new StudentResult(studentsDict[studentKey], questionsDict[questionKey], score, date));
                 }
             }
 
-            return existingResults;
+            return results;
         }
 
         private List<StudentResult> MergeData(List<StudentResult> existing, List<StudentResult> newData)
@@ -359,7 +476,7 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var statistics = data
-                .Where(r => !string.IsNullOrWhiteSpace(r.Question.Quest)) // Исключаем вопросы без названия
+                .Where(r => !string.IsNullOrWhiteSpace(r.Question.Quest))
                 .GroupBy(r => new { Theme = r.Question.Theme?.ThemeName ?? "Без темы", Question = r.Question.Quest })
                 .Select(g => new
                 {

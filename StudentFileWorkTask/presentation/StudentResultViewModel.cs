@@ -273,31 +273,6 @@ namespace StudentFileWorkTask.presentation
 
         }
 
-        public List<StudentResultThemeSum> GetStudentResultThemeSummary()
-        {
-            var index = 0;
-            if (IsSumAggregationChecked) {
-                List<StudentResultThemeSum> list = aggregated.GroupBy(result => new { result.Student }).Select(r =>
-                    new StudentResultThemeSum(
-                         r.Key.Student,
-                         r.ToDictionary(v => v.Question.Theme.ThemeName, v => (int)v.Score),
-                         (int)r.Sum(s => s.Score)
-                    )
-                ).OrderBy(r => r.Student.Surname).ToList();
-
-                foreach (var result in list)
-                {
-                    result.Index = ++index;
-                }
-
-                return list;
-            }
-            else
-            {
-                return new();
-            }
-        }
-
         private void SortInitialList(List<StudentResult> resultList)
         {
             List<StudentResult> sorted = resultList.OrderBy(r => r.Question.Quest).ToList();
@@ -357,45 +332,6 @@ namespace StudentFileWorkTask.presentation
         {
             get { return _fileList; }
             set { _fileList = value; OnPropertyChanged(nameof(FileList)); }
-        }
-
-        public void AddFiles(string[] filePaths)
-        {
-            int added = 0;
-            foreach (var file in filePaths)
-            {
-                if (!_selectedFiles.Contains(file))
-                {
-                    _selectedFiles.Add(file);
-                    FileList.Add(System.IO.Path.GetFileName(file));
-                    added++;
-                }
-            }
-            if (added > 0)
-                MessageBox.Show($"Загружено файлов: {added}");
-        }
-
-        public void AddFilesFromFolder(string folderPath)
-        {
-            string[] extensions = { "*.xlsx", "*.xls", "*.csv" };
-            var files = new List<string>();
-            foreach (var ext in extensions)
-            {
-                files.AddRange(System.IO.Directory.GetFiles(folderPath, ext));
-            }
-
-            int added = 0;
-            foreach (var file in files)
-            {
-                if (!_selectedFiles.Contains(file))
-                {
-                    _selectedFiles.Add(file);
-                    FileList.Add(System.IO.Path.GetFileName(file));
-                    added++;
-                }
-            }
-            if (added > 0)
-                MessageBox.Show($"Загружено файлов из папки: {added}");
         }
 
         public void ClearFiles()
