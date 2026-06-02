@@ -5,8 +5,6 @@ using StudentFileWorkTask.presentation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace StudentFileWorkTask.export
@@ -40,22 +38,26 @@ namespace StudentFileWorkTask.export
         {
             using (var workbook = new XLWorkbook())
             {
-                var filteredData = GetFilteredData();
-                CreateAllGroupsSheet(workbook, filteredData);
-                CreateGroupSheets(workbook, filteredData);
-                CreateThemeSummarySheet(workbook, filteredData);
+                var filteredData = _viewModel.StudentResultList.ToList();
+
+                if (_viewModel.IsDefaultggregationChecked)
+                {
+                    CreateAllGroupsSheetDetailed(workbook, filteredData);
+                    CreateGroupSheetsDetailed(workbook, filteredData);
+                }
+                else
+                {
+                    CreateAllGroupsSheetAggregated(workbook, filteredData);
+                    CreateGroupSheetsAggregated(workbook, filteredData);
+                }
+
                 CreateQuestionsStatisticsSheet(workbook, filteredData);
 
                 workbook.SaveAs(filePath);
             }
         }
 
-        private List<StudentResult> GetFilteredData()
-        {
-            return _viewModel.StudentResultList.ToList();
-        }
-
-        private void CreateAllGroupsSheet(XLWorkbook workbook, List<StudentResult> data)
+        private void CreateAllGroupsSheetDetailed(XLWorkbook workbook, List<StudentResult> data)
         {
             var worksheet = workbook.Worksheets.Add("Все группы");
 
@@ -72,19 +74,19 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var groupedData = data
-                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", Student = r.Student.Surname, Theme = r.Question.Theme.ThemeName, Date = r.Date })
+                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", Date = r.Date })
                 .Select(g => new
                 {
                     Group = g.Key.Group,
-                    Student = g.Key.Student,
+                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
                     Date = g.Key.Date,
                     Theme = g.Key.Theme,
                     TotalScore = g.Sum(r => r.Score)
                 })
-                .OrderBy(r => r.Group)
+                .OrderBy(r => r.Theme)
+                .ThenBy(r => r.Group)
                 .ThenBy(r => r.Student)
                 .ThenBy(r => r.Date)
-                .ThenBy(r => r.Theme)
                 .ToList();
 
             int row = 2;
@@ -101,7 +103,7 @@ namespace StudentFileWorkTask.export
             worksheet.Columns().AdjustToContents();
         }
 
-        private void CreateGroupSheets(XLWorkbook workbook, List<StudentResult> data)
+        private void CreateGroupSheetsDetailed(XLWorkbook workbook, List<StudentResult> data)
         {
             var groups = data
                 .Where(r => r.Student.Group != null)
@@ -115,24 +117,22 @@ namespace StudentFileWorkTask.export
                 var sheetName = groupName.Length > 31 ? groupName.Substring(0, 31) : groupName;
                 var worksheet = workbook.Worksheets.Add(sheetName);
 
-                worksheet.Cell(1, 1).Value = "Группа";
-                worksheet.Cell(1, 2).Value = "Студент";
-                worksheet.Cell(1, 3).Value = "Дата";
-                worksheet.Cell(1, 4).Value = "Тема";
-                worksheet.Cell(1, 5).Value = "Суммарный балл";
+                worksheet.Cell(1, 1).Value = "Студент";
+                worksheet.Cell(1, 2).Value = "Дата";
+                worksheet.Cell(1, 3).Value = "Тема";
+                worksheet.Cell(1, 4).Value = "Суммарный балл";
 
-                var headerRange = worksheet.Range("A1:E1");
+                var headerRange = worksheet.Range("A1:D1");
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Font.FontColor = XLColor.White;
                 headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
                 headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 var groupedData = groupData
-                    .GroupBy(r => new { Student = r.Student.Surname, Theme = r.Question.Theme.ThemeName, Date = r.Date })
+                    .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", Date = r.Date })
                     .Select(g => new
                     {
-                        Group = groupName,
-                        Student = g.Key.Student,
+                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
                         Date = g.Key.Date,
                         Theme = g.Key.Theme,
                         TotalScore = g.Sum(r => r.Score)
@@ -145,11 +145,10 @@ namespace StudentFileWorkTask.export
                 int row = 2;
                 foreach (var item in groupedData)
                 {
-                    worksheet.Cell(row, 1).Value = item.Group;
-                    worksheet.Cell(row, 2).Value = item.Student;
-                    worksheet.Cell(row, 3).Value = item.Date?.ToString("dd.MM.yyyy") ?? "";
-                    worksheet.Cell(row, 4).Value = item.Theme;
-                    worksheet.Cell(row, 5).Value = item.TotalScore;
+                    worksheet.Cell(row, 1).Value = item.Student;
+                    worksheet.Cell(row, 2).Value = item.Date?.ToString("dd.MM.yyyy") ?? "";
+                    worksheet.Cell(row, 3).Value = item.Theme;
+                    worksheet.Cell(row, 4).Value = item.TotalScore;
                     row++;
                 }
 
@@ -157,76 +156,95 @@ namespace StudentFileWorkTask.export
             }
         }
 
-        private void CreateThemeSummarySheet(XLWorkbook workbook, List<StudentResult> data)
+        private void CreateAllGroupsSheetAggregated(XLWorkbook workbook, List<StudentResult> data)
         {
-            var worksheet = workbook.Worksheets.Add("Сводка по темам");
+            var worksheet = workbook.Worksheets.Add("Все группы");
 
-            var allThemes = data
-                .Select(r => r.Question.Theme.ThemeName)
-                .Distinct()
-                .OrderBy(t => t)
-                .ToList();
+            worksheet.Cell(1, 1).Value = "Группа";
+            worksheet.Cell(1, 2).Value = "Студент";
+            worksheet.Cell(1, 3).Value = "Тема";
+            worksheet.Cell(1, 4).Value = "Суммарный балл";
 
-            if (!allThemes.Any())
-            {
-                worksheet.Cell(1, 1).Value = "Нет данных для отображения";
-                return;
-            }
-
-            var studentsData = data
-                .GroupBy(r => r.Student)
-                .Select(g => new
-                {
-                    Student = g.Key,
-                    Scores = g.GroupBy(r => r.Question.Theme.ThemeName)
-                              .ToDictionary(tg => tg.Key, tg => tg.Sum(r => r.Score))
-                })
-                .OrderBy(s => s.Student.Surname)
-                .ToList();
-
-            worksheet.Cell(1, 1).Value = "№";
-            worksheet.Cell(1, 2).Value = "ФИО";
-
-            int col = 3;
-            foreach (var theme in allThemes)
-            {
-                worksheet.Cell(1, col).Value = theme;
-                col++;
-            }
-
-            worksheet.Cell(1, col).Value = "Сумма баллов";
-
-            var headerRange = worksheet.Range(worksheet.Cell(1, 1), worksheet.Cell(1, col));
+            var headerRange = worksheet.Range("A1:D1");
             headerRange.Style.Font.Bold = true;
             headerRange.Style.Font.FontColor = XLColor.White;
             headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            int row = 2;
-            int index = 1;
-            foreach (var studentData in studentsData)
-            {
-                worksheet.Cell(row, 1).Value = index++;
-                worksheet.Cell(row, 2).Value = $"{studentData.Student.Surname} {studentData.Student.Name} {studentData.Student.Patronymic}";
-
-                double totalScore = 0;
-                col = 3;
-                foreach (var theme in allThemes)
+            var groupedData = data
+                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
+                .Select(g => new
                 {
-                    double score = studentData.Scores.ContainsKey(theme) ? studentData.Scores[theme] : 0;
-                    if (score > 0)
-                    {
-                        worksheet.Cell(row, col).Value = score;
-                    }
-                    totalScore += score;
-                    col++;
-                }
+                    Group = g.Key.Group,
+                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                    Theme = g.Key.Theme,
+                    TotalScore = g.Sum(r => r.Score)
+                })
+                .OrderBy(r => r.Theme)
+                .ThenBy(r => r.Group)
+                .ThenBy(r => r.Student)
+                .ToList();
 
-                worksheet.Cell(row, col).Value = totalScore;
+            int row = 2;
+            foreach (var item in groupedData)
+            {
+                worksheet.Cell(row, 1).Value = item.Group;
+                worksheet.Cell(row, 2).Value = item.Student;
+                worksheet.Cell(row, 3).Value = item.Theme;
+                worksheet.Cell(row, 4).Value = item.TotalScore;
                 row++;
             }
 
             worksheet.Columns().AdjustToContents();
+        }
+
+        private void CreateGroupSheetsAggregated(XLWorkbook workbook, List<StudentResult> data)
+        {
+            var groups = data
+                .Where(r => r.Student.Group != null)
+                .Select(r => r.Student.Group.GroupName)
+                .Distinct()
+                .OrderBy(g => g);
+
+            foreach (var groupName in groups)
+            {
+                var groupData = data.Where(r => r.Student.Group?.GroupName == groupName).ToList();
+                var sheetName = groupName.Length > 31 ? groupName.Substring(0, 31) : groupName;
+                var worksheet = workbook.Worksheets.Add(sheetName);
+
+                worksheet.Cell(1, 1).Value = "Студент";
+                worksheet.Cell(1, 2).Value = "Тема";
+                worksheet.Cell(1, 3).Value = "Суммарный балл";
+
+                var headerRange = worksheet.Range("A1:C1");
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Font.FontColor = XLColor.White;
+                headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
+                headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                var groupedData = groupData
+                    .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
+                    .Select(g => new
+                    {
+                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                        Theme = g.Key.Theme,
+                        TotalScore = g.Sum(r => r.Score)
+                    })
+                    .OrderBy(r => r.Student)
+                    .ThenBy(r => r.Theme)
+                    .ToList();
+
+                int row = 2;
+                foreach (var item in groupedData)
+                {
+                    worksheet.Cell(row, 1).Value = item.Student;
+                    worksheet.Cell(row, 2).Value = item.Theme;
+                    worksheet.Cell(row, 3).Value = item.TotalScore;
+                    row++;
+                }
+
+                worksheet.Columns().AdjustToContents();
+            }
         }
 
         private void CreateQuestionsStatisticsSheet(XLWorkbook workbook, List<StudentResult> data)
@@ -246,11 +264,11 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var statistics = data
-                .GroupBy(r => new { Theme = r.Question.Theme.ThemeName, Question = r.Question.Quest })
+                .GroupBy(r => new { Theme = r.Question.Theme?.ThemeName ?? "Без темы", Question = r.Question.Quest ?? "Без названия" })
                 .Select(g => new
                 {
                     Theme = g.Key.Theme,
-                    Question = string.IsNullOrEmpty(g.Key.Question) ? "Без названия" : g.Key.Question,
+                    Question = g.Key.Question,
                     CorrectAnswers = g.Count(r => r.Score == 1),
                     TotalAnswered = g.Count(r => r.Score == 0 || r.Score == 1),
                     Percentage = g.Any(r => r.Score == 0 || r.Score == 1) ?
