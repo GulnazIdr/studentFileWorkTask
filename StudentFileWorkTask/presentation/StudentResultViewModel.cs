@@ -475,8 +475,8 @@ namespace StudentFileWorkTask.presentation
 
                         if (qIdx < 0 || sIdx < 0) continue;
 
-                        string themeName = questionCol;
-                        string questionText = worksheet.Cells[row, qIdx + 1].Text;
+                        string themeName = Path.GetFileNameWithoutExtension(filePath);
+                        string questionText = worksheet.Cells[1, qIdx + 1].Text;
                         double score = double.TryParse(worksheet.Cells[row, sIdx + 1].Text, out var val) ? val : 0;
 
                         if (!themesDict.ContainsKey(themeName))
