@@ -69,7 +69,8 @@
                                  Height="100"
                                  ItemsSource="{Binding FileList}"
                                  BorderBrush="#E0E0E0"
-                                 BorderThickness="1"/>
+                                 BorderThickness="1"
+                                 MouseDoubleClick="lstFiles_MouseDoubleClick"/>
 
                         <Button x:Name="btnClearFiles" 
                                 Content="Очистить" 
