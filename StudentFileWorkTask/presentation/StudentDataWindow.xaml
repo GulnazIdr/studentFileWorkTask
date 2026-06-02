@@ -69,7 +69,8 @@
                                  Height="100"
                                  ItemsSource="{Binding FileList}"
                                  BorderBrush="#E0E0E0"
-                                 BorderThickness="1"/>
+                                 BorderThickness="1"
+                                 MouseDoubleClick="lstFiles_MouseDoubleClick"/>
 
                         <Button x:Name="btnClearFiles" 
                                 Content="Очистить" 
@@ -184,10 +185,16 @@ Source={x:Reference columnElement}}"
                 </Border>
                 
                 <Button x:Name="excelCreateBtn" 
-                        Content="Сформировать отчет по группам" 
+                        Content="Сформировать новый отчет" 
                         Click="excelCreateBtn_Click" 
                         Style="{StaticResource RoundButton}"
                         HorizontalAlignment="Left"/>
+
+                <Button x:Name="excelUpdateBtn" 
+                        Content="Обновить существующий отчет" 
+                        Click="excelUpdateBtn_Click" 
+                        Style="{StaticResource RoundButton}"
+                        HorizontalAlignment="Left" Margin="0,10,0,0"/>
                 <Button x:Name="pdfExportBtn" 
                         Content="Экспорт в PDF" 
                         Click="PdfExportBtn_Click" 
