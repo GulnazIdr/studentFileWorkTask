@@ -72,6 +72,11 @@ namespace StudentFileWorkTask.presentation
             exportService.CreateNewReport();
         }
 
+        private void excelUpdateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            exportService.UpdateExistingReport();
+        }
+
         private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog();

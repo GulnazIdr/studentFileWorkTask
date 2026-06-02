@@ -34,27 +34,122 @@ namespace StudentFileWorkTask.export
             }
         }
 
+        public void UpdateExistingReport()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Excel files (*.xlsx)|*.xlsx",
+                Title = "Выберите существующий отчет для обновления"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var existingData = LoadExistingData(openFileDialog.FileName);
+                    var newData = _viewModel.StudentResultList.ToList();
+
+                    var mergedData = MergeData(existingData, newData);
+
+                    GenerateReportWithData(openFileDialog.FileName, mergedData);
+                    MessageBox.Show("Отчет успешно обновлен!");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка при обновлении отчета: {ex.Message}");
+                }
+            }
+        }
+
         public void GenerateReport(string filePath)
+        {
+            var filteredData = _viewModel.StudentResultList.ToList();
+            GenerateReportWithData(filePath, filteredData);
+        }
+
+        private void GenerateReportWithData(string filePath, List<StudentResult> data)
         {
             using (var workbook = new XLWorkbook())
             {
-                var filteredData = _viewModel.StudentResultList.ToList();
-
                 if (_viewModel.IsDefaultggregationChecked)
                 {
-                    CreateAllGroupsSheetDetailed(workbook, filteredData);
-                    CreateGroupSheetsDetailed(workbook, filteredData);
+                    CreateAllGroupsSheetDetailed(workbook, data);
+                    CreateGroupSheetsDetailed(workbook, data);
                 }
                 else
                 {
-                    CreateAllGroupsSheetAggregated(workbook, filteredData);
-                    CreateGroupSheetsAggregated(workbook, filteredData);
+                    CreateAllGroupsSheetAggregated(workbook, data);
+                    CreateGroupSheetsAggregated(workbook, data);
                 }
 
-                CreateQuestionsStatisticsSheet(workbook, filteredData);
+                CreateQuestionsStatisticsSheet(workbook, data);
 
                 workbook.SaveAs(filePath);
             }
+        }
+
+        private List<StudentResult> LoadExistingData(string filePath)
+        {
+            var existingResults = new List<StudentResult>();
+
+            using (var workbook = new XLWorkbook(filePath))
+            {
+                var worksheet = workbook.Worksheet("Все группы");
+                if (worksheet == null) return existingResults;
+
+                var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? 1;
+
+                for (int row = 2; row <= lastRow; row++)
+                {
+                    var groupName = worksheet.Cell(row, 1).GetString();
+                    var studentName = worksheet.Cell(row, 2).GetString();
+                    var dateStr = worksheet.Cell(row, 3).GetString();
+                    var themeName = worksheet.Cell(row, 4).GetString();
+                    var score = worksheet.Cell(row, 5).GetDouble();
+
+                    if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(themeName)) continue;
+
+                    var nameParts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    string surname = nameParts.Length > 0 ? nameParts[0] : "";
+                    string name = nameParts.Length > 1 ? nameParts[1] : "";
+                    string patronymic = nameParts.Length > 2 ? nameParts[2] : "";
+
+                    var group = new Group(string.IsNullOrEmpty(groupName) ? "Без группы" : groupName);
+                    var student = new Student(surname, name, patronymic, group);
+                    var theme = new Theme(themeName);
+                    var question = new Question(theme);
+
+                    DateOnly? date = null;
+                    if (DateTime.TryParse(dateStr, out var dt))
+                        date = DateOnly.FromDateTime(dt);
+
+                    existingResults.Add(new StudentResult(student, question, score, date));
+                }
+            }
+
+            return existingResults;
+        }
+
+        private List<StudentResult> MergeData(List<StudentResult> existing, List<StudentResult> newData)
+        {
+            var merged = new List<StudentResult>(existing);
+
+            foreach (var newItem in newData)
+            {
+                bool isDuplicate = existing.Any(e =>
+                    e.Student.Surname == newItem.Student.Surname &&
+                    e.Student.Name == newItem.Student.Name &&
+                    e.Question.Theme.ThemeName == newItem.Question.Theme.ThemeName &&
+                    e.Question.Quest == newItem.Question.Quest &&
+                    e.Date == newItem.Date);
+
+                if (!isDuplicate)
+                {
+                    merged.Add(newItem);
+                }
+            }
+
+            return merged;
         }
 
         private void CreateAllGroupsSheetDetailed(XLWorkbook workbook, List<StudentResult> data)
@@ -78,7 +173,7 @@ namespace StudentFileWorkTask.export
                 .Select(g => new
                 {
                     Group = g.Key.Group,
-                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
                     Date = g.Key.Date,
                     Theme = g.Key.Theme,
                     TotalScore = g.Sum(r => r.Score)
@@ -132,7 +227,7 @@ namespace StudentFileWorkTask.export
                     .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", Date = r.Date })
                     .Select(g => new
                     {
-                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
                         Date = g.Key.Date,
                         Theme = g.Key.Theme,
                         TotalScore = g.Sum(r => r.Score)
@@ -176,7 +271,7 @@ namespace StudentFileWorkTask.export
                 .Select(g => new
                 {
                     Group = g.Key.Group,
-                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                    Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
                     Theme = g.Key.Theme,
                     TotalScore = g.Sum(r => r.Score)
                 })
@@ -226,7 +321,7 @@ namespace StudentFileWorkTask.export
                     .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
                     .Select(g => new
                     {
-                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}".Trim(),
+                        Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
                         Theme = g.Key.Theme,
                         TotalScore = g.Sum(r => r.Score)
                     })
