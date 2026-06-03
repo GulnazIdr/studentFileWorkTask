@@ -1,0 +1,150 @@
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.exe
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.deps.json
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.runtimeconfig.json
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.g.cs
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.g.cs
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.lref
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.baml
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.g.resources
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.GeneratedMSBuildEditorConfig.editorconfig
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfoInputs.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfo.cs
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.CoreCompileInputs.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.sourcelink.json
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\refint\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.genruntimeconfig.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\ref\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\MaterialDesignColors.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.exe
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.deps.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.runtimeconfig.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\MaterialDesignColors.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\MainWindow.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.lref
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\MainWindow.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.g.resources
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.GeneratedMSBuildEditorConfig.editorconfig
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfoInputs.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfo.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.CoreCompileInputs.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.sourcelink.json
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\refint\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.pdb
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.genruntimeconfig.cache
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\ref\StudentFileWorkTask.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.baml
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.g.cs
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.Interfaces.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.System.Drawing.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Json.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Primitives.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\BouncyCastle.Crypto.dll
+D:\Visuai Studio Projects\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\itextsharp.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.exe
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.deps.json
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.runtimeconfig.json
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\StudentFileWorkTask.pdb
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\BouncyCastle.Crypto.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ClosedXML.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ClosedXML.Parser.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\DocumentFormat.OpenXml.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\DocumentFormat.OpenXml.Framework.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.Interfaces.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.System.Drawing.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ExcelNumberFormat.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\itextsharp.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\MaterialDesignColors.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Primitives.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Xaml.Behaviors.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\RBush.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\SixLabors.Fonts.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\System.IO.Packaging.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\System.Security.Cryptography.Pkcs.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.AssemblyReference.cache
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.baml
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.g.cs
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.g.cs
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.g.cs
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.cache
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask_MarkupCompile.lref
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\App.baml
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\StudentDataWindow.baml
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.g.resources
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfoInputs.cache
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.AssemblyInfo.cs
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.csproj.CoreCompileInputs.cache
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.sourcelink.json
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentF.8FB0264B.Up2Date
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\refint\StudentFileWorkTask.dll
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.pdb
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\StudentFileWorkTask.genruntimeconfig.cache
+C:\Users\cxnts\Source\Repos\studentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\ref\StudentFileWorkTask.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\BouncyCastle.Crypto.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ClosedXML.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ClosedXML.Parser.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\DocumentFormat.OpenXml.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\DocumentFormat.OpenXml.Framework.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.Interfaces.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\EPPlus.System.Drawing.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\ExcelNumberFormat.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\itextsharp.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Json.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.Extensions.Primitives.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\RBush.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\SixLabors.Fonts.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\System.IO.Packaging.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\System.Security.Cryptography.Pkcs.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.baml
+D:\wpf\StudentFileWorkTask\StudentFileWorkTask\obj\Debug\net6.0-windows\presentation\ColumnMappingWindow.g.cs
