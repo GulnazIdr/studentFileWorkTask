@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StudentFileWorkTask")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+218acc9c8046bcfe7c5a6ce45aec69e87fd7600c")]
 [assembly: System.Reflection.AssemblyProductAttribute("StudentFileWorkTask")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StudentFileWorkTask")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
