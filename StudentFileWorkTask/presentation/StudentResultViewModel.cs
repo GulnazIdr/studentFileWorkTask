@@ -615,6 +615,11 @@ namespace StudentFileWorkTask.presentation
                     results[i] = results[j];
                     results[j] = temp;
                 }
+
+                SortInitialList(_InitialStudentResultList.ToList());
+                StudentResultList = _InitialStudentResultList;
+
+                UpdateFilters();
             }
 
             StudentResult tempPivot = results[left];

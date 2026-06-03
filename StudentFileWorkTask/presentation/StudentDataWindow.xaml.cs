@@ -7,23 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace StudentFileWorkTask.presentation
 {
     public partial class StudentDataWindow : Window
     {
         StudentResultViewModel studentResultViewModel;
-        private List<string> _selectedFiles = new List<string>();
         private ExcelExportService exportService;
 
         public StudentDataWindow()
@@ -72,43 +64,115 @@ namespace StudentFileWorkTask.presentation
             exportService.CreateNewReport();
         }
 
+        private void excelUpdateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            exportService.UpdateExistingReport();
+        }
+
         private void BtnAddFiles_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog();
-            dialog.Multiselect = true;
+            dialog.Multiselect = false;
             dialog.Filter = "Excel files|*.xlsx;*.xls|CSV files|*.csv|All files|*.*";
 
             if (dialog.ShowDialog() == true)
             {
-                foreach (var file in dialog.FileNames)
-                {
-                    var headers = studentResultViewModel.GetHeadersFromFile(file);
-                    var mappingWindow = new ColumnMappingWindow(headers);
+                studentResultViewModel.ClearAllData();
+                studentResultViewModel.ClearFiles();
 
-                    if (mappingWindow.ShowDialog() == true)
-                    {
-                        studentResultViewModel.LoadFileWithMapping(file, mappingWindow.ResultTemplate);
-                    }
+                var file = dialog.FileName;
+                var headers = studentResultViewModel.GetHeadersFromFile(file);
+                var mappingWindow = new ColumnMappingWindow(headers);
+
+                if (mappingWindow.ShowDialog() == true)
+                {
+                    studentResultViewModel.LoadFileWithMapping(file, mappingWindow.ResultTemplate);
+
+                    string fileName = Path.GetFileName(file);
+                    studentResultViewModel.FileList.Add(fileName);
+                    studentResultViewModel.SelectedFiles.Add(file);
                 }
             }
         }
 
         private void BtnSelectFolder_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new Microsoft.Win32.OpenFileDialog();
+            var dialog = new OpenFileDialog();
             dialog.Title = "Выберите любой файл в нужной папке";
             dialog.FileName = "выберите файл";
+            dialog.Filter = "Все файлы|*.*";
 
             if (dialog.ShowDialog() == true)
             {
                 string folderPath = System.IO.Path.GetDirectoryName(dialog.FileName);
-                studentResultViewModel.AddFilesFromFolder(folderPath);
+                LoadFilesFromFolder(folderPath);
             }
+        }
+
+        private void LoadFilesFromFolder(string folderPath)
+        {
+            string[] extensions = { "*.xlsx", "*.xls", "*.csv" };
+            var files = new List<string>();
+            foreach (var ext in extensions)
+            {
+                files.AddRange(Directory.GetFiles(folderPath, ext));
+            }
+
+            if (files.Count == 0)
+            {
+                MessageBox.Show("В выбранной папке нет файлов Excel или CSV.");
+                return;
+            }
+
+            int addedCount = 0;
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileName(file);
+                if (!studentResultViewModel.FileList.Contains(fileName))
+                {
+                    studentResultViewModel.FileList.Add(fileName);
+                    studentResultViewModel.SelectedFiles.Add(file);
+                    addedCount++;
+                }
+            }
+
+            MessageBox.Show($"Добавлено файлов в список: {addedCount}\nДля загрузки данных дважды кликните по файлу.");
         }
 
         private void BtnClearFiles_Click(object sender, RoutedEventArgs e)
         {
+            studentResultViewModel.ClearAllData();
             studentResultViewModel.ClearFiles();
+        }
+
+        private void lstFiles_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            if (listBox?.SelectedItem != null)
+            {
+                string fileName = listBox.SelectedItem.ToString();
+                string filePath = studentResultViewModel.SelectedFiles.FirstOrDefault(f => Path.GetFileName(f) == fileName);
+
+                if (filePath != null)
+                {
+                    if (studentResultViewModel.LoadedFiles.Contains(filePath))
+                    {
+                        MessageBox.Show($"Файл '{fileName}' уже добавлен в отчет.");
+                        return;
+                    }
+
+                    var headers = studentResultViewModel.GetHeadersFromFile(filePath);
+                    var mappingWindow = new ColumnMappingWindow(headers);
+
+                    if (mappingWindow.ShowDialog() == true)
+                    {
+                        studentResultViewModel.AppendFileWithMapping(filePath, mappingWindow.ResultTemplate);
+                        studentResultViewModel.LoadedFiles.Add(filePath);
+
+                        MessageBox.Show($"Файл '{fileName}' загружен и добавлен в отчет.");
+                    }
+                }
+            }
         }
 
         private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
