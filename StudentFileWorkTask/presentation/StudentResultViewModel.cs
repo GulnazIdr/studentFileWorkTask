@@ -10,17 +10,26 @@ using DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.MsForms;
 using Question = StudentFileWorkTask.data.Question;
 using System.Collections.Generic;
 using StudentFileWorkTask.export;
+using StudentFileWorkTask.domain;
 
 namespace StudentFileWorkTask.presentation
 {
     internal class StudentResultViewModel : INotifyPropertyChanged
     {
+        private SortUitls sortUitls = new SortUitls();  
         private ObservableCollection<StudentResult> _InitialStudentResultList { get; set; }
         private ObservableCollection<Question> _questionList { get; set; }
         private Template currentTemplate { get; set; }
         private bool IsFiltering = false;
         private IEnumerable<StudentResult> filtered = new List<StudentResult>();
         private List<StudentResult> aggregated = new();
+
+        private List<string> _loadedFiles = new List<string>();
+        public List<string> LoadedFiles        
+        {
+            get { return _loadedFiles; }
+            set { _loadedFiles = value; OnPropertyChanged(nameof(LoadedFiles)); }
+        }
 
         private List<string> _selectedFiles = new List<string>();
         public List<string> SelectedFiles
@@ -342,6 +351,34 @@ namespace StudentFileWorkTask.presentation
             FileList.Clear();
         }
 
+        public void ClearAllData()
+        {
+            _InitialStudentResultList.Clear();
+            StudentResultList.Clear();
+            GroupList.Clear();
+            StudentList.Clear();
+            ThemeList.Clear();
+            _questionList.Clear();
+            aggregated.Clear();
+            filtered = new List<StudentResult>();
+            IsFiltering = false;
+            _loadedFiles.Clear();
+
+            OptionList.Clear();
+            AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
+            AddFilterIfExists("Студенты", StudentList, s => s.Surname);
+            if (currentTemplate.IsGroupExists)
+            {
+                AddFilterIfExists("Группы", GroupList, g => g.GroupName);
+            }
+        }
+
+        public void LoadSingleFile(string filePath, MappingTemplate template)
+        {
+            ClearAllData(); ClearAllData();
+            LoadFileWithMapping(filePath, template);
+        }
+
         private FilterResult ProcessFilter(FilterSnapshot snapshot)
         {
             var filteredData = snapshot.InitialData;
@@ -357,7 +394,7 @@ namespace StudentFileWorkTask.presentation
                 if (!selectedOptions.Any()) continue;
                 isAllUnchecked = false;
 
-                filteredData = QuickFilter(filteredData, selectedOptions, filterGroup.FilterName);
+                filteredData = sortUitls.QuickFilter(filteredData, selectedOptions, filterGroup.FilterName);
             }
 
             return new FilterResult
@@ -369,14 +406,15 @@ namespace StudentFileWorkTask.presentation
 
         private List<StudentResult> ProcessAggregation(AggregationSnapshot snapshot)
         {
+            var questionAmount = _questionList.Count;
             if (snapshot.IsDefaultChecked)
                 return snapshot.CurrentList;
 
             if (snapshot.IsSumChecked)
-                return QuickAggregation(snapshot.CurrentList, true);
+                return sortUitls.QuickAggregation(snapshot.CurrentList, questionAmount, true);
 
             if (snapshot.IsMiddleChecked)
-                return QuickAggregation(snapshot.CurrentList);
+                return sortUitls.QuickAggregation(snapshot.CurrentList, questionAmount);
 
             return snapshot.CurrentList;
         }
@@ -510,19 +548,20 @@ namespace StudentFileWorkTask.presentation
 
         private void SortInitialListSync(List<StudentResult> resultList)
         {
-            QuickSortSync(resultList, 0, resultList.Count() - 1, isThemeName: true);
+
+            sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1,  isThemeName: true);
 
             if (currentTemplate.IsGroupExists)
             {
-                QuickSortSync(resultList, 0, resultList.Count() - 1, isGroupName: true);
+                sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1,  isGroupName: true);
             }
 
-            QuickSortSync(resultList, 0, resultList.Count() - 1, isSurname: true);
-            QuickSortSync(resultList, 0, resultList.Count() - 1, isQuestion: true);
+            sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1, isSurname: true);
+            sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1, isQuestion: true);
 
             if (currentTemplate.IsDataExists)
             {
-                QuickSortSync(resultList, 0, resultList.Count() - 1);
+                sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1);
             }
         }
 
@@ -543,21 +582,6 @@ namespace StudentFileWorkTask.presentation
             DetailColumnsVisibility = (!IsDefaultggregationChecked)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
-        }
-
-        private void QuickSortSync(List<StudentResult> arr, int left, int right, bool isQuestion = false, bool isSurname = false, bool isGroupName = false, bool isThemeName = false)
-        {
-            if (left < right)
-            {
-                int pivot = 0;
-                if (isQuestion || isSurname || isGroupName || isThemeName)
-                    pivot = StringPartitionSync(arr, left, right, isQuestion, isSurname, isGroupName, isThemeName);
-                else
-                    pivot = DatePartitionSync(arr, left, right);
-
-                QuickSortSync(arr, left, pivot - 1, isQuestion, isSurname, isGroupName, isThemeName);
-                QuickSortSync(arr, pivot + 1, right, isQuestion, isSurname, isGroupName, isThemeName);
-            }
         }
 
         private int StringPartitionSync(List<StudentResult> results, int left, int right, bool isQuestion, bool isSurname, bool isGroupName, bool isThemeName)
@@ -628,95 +652,34 @@ namespace StudentFileWorkTask.presentation
             return j;
         }
 
-        private int DatePartitionSync(List<StudentResult> results, int left, int right)
+        private void UpdateFilters()
         {
-            DateOnly? pivot = results[left].Date;
-            int i = left + 1;
-            int j = right;
-
-            while (i <= j)
-            {
-                while (i <= right && results[i].Date <= pivot)
-                {
-                    i++;
-                }
-
-                while (j > left && results[j].Date >= pivot)
-                {
-                    j--;
-                }
-
-                if (i < j)
-                {
-                    StudentResult? temp = results[i];
-                    results[i] = results[j];
-                    results[j] = temp;
-                }
-            }
-            StudentResult tempPivot = results[left];
-            results[left] = results[j];
-            results[j] = tempPivot;
-            return j;
+            OptionList.Clear();
+            AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
+            AddFilterIfExists("Студенты", StudentList, s => s.Surname);
+            if (GroupList.Any())
+                AddFilterIfExists("Группы", GroupList, g => g.GroupName);
         }
 
-        private List<StudentResult> QuickFilter(List<StudentResult> initial, List<string> keyWords, string filterType)
+        private void SortInitialList(List<StudentResult> resultList)
         {
-            var keyWordSet = new HashSet<string>(keyWords);
-            var result = new List<StudentResult>(initial.Count);
+            List<StudentResult> sorted = resultList.OrderBy(r => r.Question.Quest).ToList();
 
-            foreach (var item in initial)
+            if (currentTemplate.IsDataExists)
             {
-                bool matches = false;
-
-                switch (filterType)
-                {
-                    case "Темы":
-                        matches = keyWordSet.Contains(item.Question.Theme.ThemeName);
-                        break;
-                    case "Студенты":
-                        matches = keyWordSet.Contains(item.Student.Surname);
-                        break;
-                    case "Группы":
-                        matches = keyWordSet.Contains(item.Student.Group.GroupName);
-                        break;
-                }
-
-                if (matches)
-                    result.Add(item);
+                sorted = sorted.OrderBy(r => r.Date).ToList();
             }
 
-            return result;
-        }
+            sorted = sorted.OrderBy(r => r.Student.Surname).ToList();
 
-        private List<StudentResult> QuickAggregation(List<StudentResult> initial, bool isSum = false)
-        {
-            int questionsAmountPerTheme = _questionList.Count();
-            var dictionary = new Dictionary<string, StudentResult>();
-
-            foreach (var item in initial)
+            if (currentTemplate.IsGroupExists)
             {
-                string key = $"{item.Student.Surname}_{item.Question.Theme.ThemeName}";
-
-                if (dictionary.TryGetValue(key, out StudentResult? existing))
-                {
-                    if (isSum) existing.Score += item.Score;
-                    else existing.Score = ((double)item.Score / questionsAmountPerTheme) * 100;
-                }
-                else
-                {
-                    if (isSum)
-                    {
-                        dictionary.Add(key, new StudentResult(item.Student, new Question(item.Question.Theme), item.Score, item.Date));
-                    }
-                    else
-                    {
-                        var percent = ((double)item.Score / questionsAmountPerTheme) * 100;
-                        dictionary.Add(key, new StudentResult(item.Student, new Question(item.Question.Theme), percent, item.Date));
-                    }
-                }
+                sorted = sorted.OrderBy(r => r.Student.Group.GroupName).ToList();
             }
 
-            return dictionary.Values.ToList();
+            sorted = sorted.OrderBy(r => r.Question.Theme.ThemeName).ToList();
+
+            _InitialStudentResultList = new ObservableCollection<StudentResult>(sorted);
         }
     }
 
