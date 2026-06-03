@@ -166,7 +166,7 @@ namespace StudentFileWorkTask.presentation
 
                     if (mappingWindow.ShowDialog() == true)
                     {
-                        studentResultViewModel.AppendFileWithMapping(filePath, mappingWindow.ResultTemplate);
+                        studentResultViewModel.LoadFileWithMapping(filePath, mappingWindow.ResultTemplate);
                         studentResultViewModel.LoadedFiles.Add(filePath);
 
                         MessageBox.Show($"Файл '{fileName}' загружен и добавлен в отчет.");
