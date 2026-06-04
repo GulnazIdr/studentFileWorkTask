@@ -78,7 +78,7 @@
                     </Border>
                     <TextBlock Text="Фильтры" 
                                    Style="{StaticResource SectionHeaderStyle}"/>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="530">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="385">
                         <ListBox Name="studentFilterListBox" ItemsSource="{Binding OptionList}"   ScrollViewer.VerticalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -122,7 +122,7 @@
                                Style="{StaticResource SectionHeaderStyle}"/>
 
                     <FrameworkElement x:Name="columnElement" Visibility="Collapsed"/>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="580">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="460">
                         <DataGrid x:Name="studentResultGrid" 
                                   AutoGenerateColumns="False" 
                                   ItemsSource="{Binding StudentResultList}">
@@ -208,9 +208,10 @@
             Grid.Row="3"
             Padding="5">
             <TextBlock 
-                Text="Загрузка" 
+                Text="Загрузка..." 
                 Foreground="White"
                 HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
                 TextAlignment="Center"/>
                 <Border.Style>
                     <Style TargetType="Border">
