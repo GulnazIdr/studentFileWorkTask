@@ -20,6 +20,12 @@ namespace TestReporter.domain.fileWork
 
         public void CreateNewReport()
         {
+            if (_viewModel.StudentResultList == null || _viewModel.StudentResultList.Count == 0)
+            {
+                MessageBox.Show("Нет данных для генерации отчета!");
+                return;
+            }
+
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "Excel files (*.xlsx)|*.xlsx",
@@ -36,6 +42,12 @@ namespace TestReporter.domain.fileWork
 
         public void UpdateExistingReport()
         {
+            if (_viewModel.StudentResultList == null || _viewModel.StudentResultList.Count == 0)
+            {
+                MessageBox.Show("Нет данных для обновления отчета!");
+                return;
+            }
+
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = "Excel files (*.xlsx)|*.xlsx",
