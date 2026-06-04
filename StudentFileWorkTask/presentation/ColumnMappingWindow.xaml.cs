@@ -77,9 +77,9 @@ namespace StudentFileWorkTask.presentation
             questionsPanel.Children.Clear();
 
             var excludeKeywords = new[] {
-        "id", "время", "дата", "групп", "фамилия", "имя", "отчество", "фио",
-        "балл", "набрано", "всего", "результат", "определение", "машин"
-    };
+                "id", "время", "дата", "групп", "фамилия", "имя", "отчество", "фио",
+                "балл", "набрано", "всего", "результат", "определение", "машин"
+            };
 
             var questionColumns = new List<string>();
             var scoreColumns = new List<string>();
@@ -143,6 +143,47 @@ namespace StudentFileWorkTask.presentation
             }
         }
 
+        private bool ValidateMapping()
+        {
+            if (string.IsNullOrEmpty(cmbStudent.SelectedItem as string))
+            {
+                MessageBox.Show("Выберите столбец для студента!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(cmbGroup.SelectedItem as string))
+            {
+                MessageBox.Show("Выберите столбец для группы!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (questionsPanel.Children.Count == 0)
+            {
+                MessageBox.Show("Добавьте хотя бы одну пару Вопрос-Балл!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            foreach (StackPanel panel in questionsPanel.Children)
+            {
+                var cmbQuestion = panel.Children.OfType<ComboBox>().FirstOrDefault(c => c.Tag?.ToString() == "Question");
+                var cmbScore = panel.Children.OfType<ComboBox>().FirstOrDefault(c => c.Tag?.ToString() == "Score");
+
+                if (cmbQuestion?.SelectedItem == null)
+                {
+                    MessageBox.Show("Не выбран столбец для вопроса!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
+
+                if (cmbScore?.SelectedItem == null)
+                {
+                    MessageBox.Show("Не выбран столбец для баллов!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void LoadTemplate_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog { Filter = "JSON|*.json" };
@@ -168,6 +209,8 @@ namespace StudentFileWorkTask.presentation
 
         private void SaveTemplate_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateMapping()) return;
+
             var dialog = new SaveFileDialog { Filter = "JSON|*.json", FileName = "mapping.json" };
             if (dialog.ShowDialog() == true)
             {
@@ -193,13 +236,14 @@ namespace StudentFileWorkTask.presentation
 
                 var json = JsonSerializer.Serialize(template);
                 File.WriteAllText(dialog.FileName, json);
-                MessageBox.Show("Шаблон сохранён", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Шаблон сохранён!\nПуть: {dialog.FileName}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-
         private void Ok_Click(object sender, RoutedEventArgs e)
         {
+            if (!ValidateMapping()) return;
+
             ResultTemplate = new MappingTemplate
             {
                 StudentColumn = cmbStudent.SelectedItem as string,

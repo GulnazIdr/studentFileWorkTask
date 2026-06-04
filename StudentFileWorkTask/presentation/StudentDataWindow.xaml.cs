@@ -177,6 +177,7 @@ namespace StudentFileWorkTask.presentation
                 }
             }
         }
+
         private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog
@@ -420,7 +421,7 @@ namespace StudentFileWorkTask.presentation
 
                     doc.Close();
 
-                    MessageBox.Show("PDF успешно создан!");
+                    MessageBox.Show($"PDF сохранён!\nПуть: {dialog.FileName}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
