@@ -470,7 +470,7 @@ namespace StudentFileWorkTask.presentation
                         }
                     }
 
-                    string themeName = System.IO.Path.GetFileName(filePath);
+                    string themeName = System.IO.Path.GetFileNameWithoutExtension(filePath);
                     if (!themesDict.TryGetValue(themeName, out var theme))
                     {
                         theme = new Theme(themeName);
