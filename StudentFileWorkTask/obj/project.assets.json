@@ -1,7 +1,7 @@
 {
-  "version": 4,
+  "version": 3,
   "targets": {
-    "net6.0-windows": {
+    "net6.0-windows7.0": {
       "BouncyCastle/1.8.9": {
         "type": "package",
         "compile": {
@@ -1459,7 +1459,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0-windows": [
+    "net6.0-windows7.0": [
       "ClosedXML >= 0.105.0",
       "EPPlus >= 6.2.10",
       "MaterialDesignThemes >= 5.3.2",
@@ -1467,19 +1467,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\kseni\\.nuget\\packages\\": {}
+    "C:\\Users\\cxnts\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\TestReporter.csproj",
+      "projectUniqueName": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\TestReporter.csproj",
       "projectName": "TestReporter",
-      "projectPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\TestReporter.csproj",
-      "packagesPath": "C:\\Users\\kseni\\.nuget\\packages\\",
-      "outputPath": "D:\\Visuai Studio Projects\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
+      "projectPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\TestReporter.csproj",
+      "packagesPath": "C:\\Users\\cxnts\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\cxnts\\Source\\Repos\\studentFileWorkTask\\StudentFileWorkTask\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\kseni\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\cxnts\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1487,11 +1492,11 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0-windows": {
-          "framework": "net6.0-windows7.0",
+        "net6.0-windows7.0": {
           "targetAlias": "net6.0-windows",
           "projectReferences": {}
         }
@@ -1506,11 +1511,10 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
-      "net6.0-windows": {
-        "framework": "net6.0-windows7.0",
+      "net6.0-windows7.0": {
         "targetAlias": "net6.0-windows",
         "dependencies": {
           "ClosedXML": {
@@ -1549,7 +1553,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306\\RuntimeIdentifierGraph.json"
       }
     }
   },
@@ -1561,7 +1565,7 @@
       "message": "Пакет \"BouncyCastle 1.8.9\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net6.0-windows7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
       "libraryId": "BouncyCastle",
       "targetGraphs": [
-        "net6.0-windows"
+        "net6.0-windows7.0"
       ]
     },
     {
@@ -1571,7 +1575,7 @@
       "message": "Пакет \"iTextSharp 5.5.13.3\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net6.0-windows7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
       "libraryId": "iTextSharp",
       "targetGraphs": [
-        "net6.0-windows"
+        "net6.0-windows7.0"
       ]
     },
     {
@@ -1581,7 +1585,7 @@
       "message": "Пакет \"MaterialDesignColors 5.3.2\" был восстановлен с помощью \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\", а не целевой платформы проекта \"net6.0-windows7.0\". Этот пакет может быть не полностью совместим с вашим проектом.",
       "libraryId": "MaterialDesignColors",
       "targetGraphs": [
-        "net6.0-windows"
+        "net6.0-windows7.0"
       ]
     }
   ]
