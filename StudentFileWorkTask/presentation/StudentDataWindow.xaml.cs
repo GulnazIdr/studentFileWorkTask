@@ -185,18 +185,18 @@ namespace StudentFileWorkTask.presentation
                 FileName = "Отчёт_студентов.pdf"
             };
 
+            var items = studentResultViewModel.StudentResultList;
+
+            if (items == null || items.Count == 0)
+            {
+                MessageBox.Show("Нет данных для экспорта!");
+                return;
+            }
+
             if (dialog.ShowDialog() == true)
             {
                 try
                 {
-                    var items = studentResultViewModel.StudentResultList;
-
-                    if (items == null || items.Count == 0)
-                    {
-                        MessageBox.Show("Нет данных для экспорта!");
-                        return;
-                    }
-
                     Document doc = new Document(PageSize.A4.Rotate());
                     PdfWriter.GetInstance(doc, new FileStream(dialog.FileName, FileMode.Create));
                     doc.Open();
