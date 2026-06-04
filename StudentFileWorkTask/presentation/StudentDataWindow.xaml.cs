@@ -2,7 +2,6 @@
 using iTextSharp.text.pdf;
 using Microsoft.Win32;
 using StudentFileWorkTask.data;
-using StudentFileWorkTask.export;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TestReporter.domain.fileWork;
 
 namespace StudentFileWorkTask.presentation
 {
@@ -17,6 +17,7 @@ namespace StudentFileWorkTask.presentation
     {
         StudentResultViewModel studentResultViewModel;
         private ExcelExportService exportService;
+        private ExcelImportService importService;
 
         public StudentDataWindow()
         {
@@ -24,6 +25,7 @@ namespace StudentFileWorkTask.presentation
             studentResultViewModel = new StudentResultViewModel();
             DataContext = studentResultViewModel;
             exportService = new ExcelExportService(studentResultViewModel);
+            importService = new ExcelImportService();
         }
 
         private void filterCheck_Checked(object sender, RoutedEventArgs e)
@@ -81,7 +83,7 @@ namespace StudentFileWorkTask.presentation
                 studentResultViewModel.ClearFiles();
 
                 var file = dialog.FileName;
-                var headers = studentResultViewModel.GetHeadersFromFile(file);
+                var headers = importService.GetHeadersFromFile(file);
                 var mappingWindow = new ColumnMappingWindow(headers);
 
                 if (mappingWindow.ShowDialog() == true)
@@ -161,20 +163,20 @@ namespace StudentFileWorkTask.presentation
                         return;
                     }
 
-                    var headers = studentResultViewModel.GetHeadersFromFile(filePath);
+                    var headers = importService.GetHeadersFromFile(filePath);
                     var mappingWindow = new ColumnMappingWindow(headers);
 
                     if (mappingWindow.ShowDialog() == true)
                     {
-                        studentResultViewModel.LoadFileWithMapping(filePath, mappingWindow.ResultTemplate);
+                        studentResultViewModel.AppendMultipleFilesWithMapping(filePath, mappingWindow.ResultTemplate); 
                         studentResultViewModel.LoadedFiles.Add(filePath);
 
-                        MessageBox.Show($"Файл '{fileName}' загружен и добавлен в отчет.");
+                        if(studentResultViewModel.IsLoading == Visibility.Collapsed)
+                            MessageBox.Show($"Файл '{fileName}' загружен и добавлен в отчет.");
                     }
                 }
             }
         }
-
         private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog

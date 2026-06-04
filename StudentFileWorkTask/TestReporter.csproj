@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="export\ExcelExportService - Копировать.cs" />
+    <Compile Remove="domain\fileWork\ExcelExportService - Копировать.cs" />
   </ItemGroup>
 
   <ItemGroup>
