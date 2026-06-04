@@ -236,7 +236,7 @@ namespace StudentFileWorkTask.presentation
 
                 var json = JsonSerializer.Serialize(template);
                 File.WriteAllText(dialog.FileName, json);
-                MessageBox.Show($"Шаблон сохранён!\nПуть: {dialog.FileName}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Шаблон сохранён!\nПуть: {dialog.FileName}");
             }
         }
 

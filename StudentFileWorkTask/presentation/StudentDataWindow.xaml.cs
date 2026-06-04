@@ -421,7 +421,7 @@ namespace StudentFileWorkTask.presentation
 
                     doc.Close();
 
-                    MessageBox.Show($"PDF сохранён!\nПуть: {dialog.FileName}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"PDF сохранён!\nПуть: {dialog.FileName}");
                 }
                 catch (Exception ex)
                 {

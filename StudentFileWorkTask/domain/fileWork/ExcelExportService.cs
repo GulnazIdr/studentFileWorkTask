@@ -93,6 +93,7 @@ namespace TestReporter.domain.fileWork
                     CreateGroupSheetsAggregated(workbook, data);
                 }
 
+                CreateThemeSummarySheet(workbook, data);
                 CreateQuestionsStatisticsSheet(workbook, data);
                 UpdateDetailedDataSheet(workbook, data);
 
@@ -162,6 +163,7 @@ namespace TestReporter.domain.fileWork
                     CreateGroupSheetsAggregated(workbook, data);
                 }
 
+                CreateThemeSummarySheet(workbook, data);
                 CreateQuestionsStatisticsSheet(workbook, data);
 
                 workbook.SaveAs(filePath);
@@ -469,6 +471,76 @@ namespace TestReporter.domain.fileWork
 
                 worksheet.Columns().AdjustToContents();
             }
+        }
+
+        private void CreateThemeSummarySheet(XLWorkbook workbook, List<StudentResult> data)
+        {
+            var worksheet = workbook.Worksheets.Add("Сводка по темам");
+            var themes = data
+                .Select(r => r.Question.Theme?.ThemeName ?? "Без темы")
+                .Distinct()
+                .OrderBy(t => t)
+                .ToList();
+
+            var students = data
+                .Select(r => r.Student)
+                .Distinct()
+                .OrderBy(s => s.Surname)
+                .ThenBy(s => s.Name)
+                .ThenBy(s => s.Patronymic)
+                .ToList();
+
+            int col = 1;
+            worksheet.Cell(1, col++).Value = "№";
+            worksheet.Cell(1, col++).Value = "ФИО";
+            foreach (var theme in themes)
+            {
+                worksheet.Cell(1, col++).Value = theme;
+            }
+            worksheet.Cell(1, col).Value = "Сумма баллов";
+
+            var headerRange = worksheet.Range(1, 1, 1, col);
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Font.FontColor = XLColor.White;
+            headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(129, 166, 198);
+            headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+            var scoreByStudentAndTheme = data
+                .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
+                .ToDictionary(g => (g.Key.Student, g.Key.Theme), g => g.Sum(r => r.Score));
+
+            int row = 2;
+            int rowNumber = 1;
+            foreach (var student in students)
+            {
+                string fullName = $"{student.Surname} {student.Name} {student.Patronymic}";
+
+                worksheet.Cell(row, 1).Value = rowNumber++;
+                worksheet.Cell(row, 2).Value = fullName;
+
+                int currentCol = 3;
+                double totalScore = 0;
+
+                foreach (var theme in themes)
+                {
+                    var key = (student, theme);
+                    double score = scoreByStudentAndTheme.ContainsKey(key) ? scoreByStudentAndTheme[key] : 0;
+                    totalScore += score;
+
+                    var cell = worksheet.Cell(row, currentCol++);
+                    cell.Value = score;
+                    cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                }
+
+                var totalCell = worksheet.Cell(row, currentCol);
+                totalCell.Value = totalScore;
+                totalCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                totalCell.Style.Fill.BackgroundColor = XLColor.FromArgb(230, 240, 250);
+
+                row++;
+            }
+
+            worksheet.Columns().AdjustToContents();
         }
 
         private void CreateQuestionsStatisticsSheet(XLWorkbook workbook, List<StudentResult> data)
