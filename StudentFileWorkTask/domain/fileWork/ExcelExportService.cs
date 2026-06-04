@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace StudentFileWorkTask.export
+namespace TestReporter.domain.fileWork
 {
     internal class ExcelExportService
     {
@@ -286,13 +286,13 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var groupedData = data
-                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", Date = r.Date })
+                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", r.Date })
                 .Select(g => new
                 {
-                    Group = g.Key.Group,
+                    g.Key.Group,
                     Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
-                    Date = g.Key.Date,
-                    Theme = g.Key.Theme,
+                    g.Key.Date,
+                    g.Key.Theme,
                     TotalScore = g.Sum(r => r.Score)
                 })
                 .OrderBy(r => r.Theme)
@@ -341,12 +341,12 @@ namespace StudentFileWorkTask.export
                 headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 var groupedData = groupData
-                    .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", Date = r.Date })
+                    .GroupBy(r => new { r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы", r.Date })
                     .Select(g => new
                     {
                         Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
-                        Date = g.Key.Date,
-                        Theme = g.Key.Theme,
+                        g.Key.Date,
+                        g.Key.Theme,
                         TotalScore = g.Sum(r => r.Score)
                     })
                     .OrderBy(r => r.Student)
@@ -384,12 +384,12 @@ namespace StudentFileWorkTask.export
             headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             var groupedData = data
-                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
+                .GroupBy(r => new { Group = r.Student.Group?.GroupName ?? "Без группы", r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
                 .Select(g => new
                 {
-                    Group = g.Key.Group,
+                    g.Key.Group,
                     Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
-                    Theme = g.Key.Theme,
+                    g.Key.Theme,
                     TotalScore = g.Sum(r => r.Score)
                 })
                 .OrderBy(r => r.Theme)
@@ -435,11 +435,11 @@ namespace StudentFileWorkTask.export
                 headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 var groupedData = groupData
-                    .GroupBy(r => new { Student = r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
+                    .GroupBy(r => new { r.Student, Theme = r.Question.Theme?.ThemeName ?? "Без темы" })
                     .Select(g => new
                     {
                         Student = $"{g.Key.Student.Surname} {g.Key.Student.Name} {g.Key.Student.Patronymic}",
-                        Theme = g.Key.Theme,
+                        g.Key.Theme,
                         TotalScore = g.Sum(r => r.Score)
                     })
                     .OrderBy(r => r.Student)
@@ -480,8 +480,8 @@ namespace StudentFileWorkTask.export
                 .GroupBy(r => new { Theme = r.Question.Theme?.ThemeName ?? "Без темы", Question = r.Question.Quest })
                 .Select(g => new
                 {
-                    Theme = g.Key.Theme,
-                    Question = g.Key.Question,
+                    g.Key.Theme,
+                    g.Key.Question,
                     CorrectAnswers = g.Count(r => r.Score == 1),
                     TotalAnswered = g.Count(r => r.Score == 0 || r.Score == 1),
                     Percentage = g.Any(r => r.Score == 0 || r.Score == 1) ?

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using StudentFileWorkTask.data;
 
 namespace StudentFileWorkTask.domain
@@ -15,7 +16,10 @@ namespace StudentFileWorkTask.domain
             {
                 int pivot = 0;
                 if (isQuestion || isSurname || isGroupName || isThemeName)
-                    pivot = StringPartitionSync(arr, left, right, isQuestion, isSurname, isGroupName, isThemeName);
+                {
+                    pivot = StudentResultPartitionSync(arr, left, right, isQuestion, isSurname, isGroupName, isThemeName);
+
+                }
                 else
                     pivot = DatePartitionSync(arr, left, right);
 
@@ -24,7 +28,18 @@ namespace StudentFileWorkTask.domain
             }
         }
 
-        public int StringPartitionSync(List<StudentResult> results, int left, int right,  bool isQuestion, bool isSurname, bool isGroupName, bool isThemeName)
+        public void QuckFilterSortSync(List<Filter> arr, int left, int right)
+        {
+            if (left < right)
+            {
+                int pivot = FilterPartitionSync(arr, left, right);
+
+                QuckFilterSortSync(arr, left, pivot - 1);
+                QuckFilterSortSync(arr, pivot + 1, right);
+            }
+        }
+
+        public int StudentResultPartitionSync(List<StudentResult> results, int left, int right, bool isQuestion, bool isSurname, bool isGroupName, bool isThemeName)
         {
             string pivot = "";
             if (isQuestion) pivot = results[left].Question.Quest;
@@ -37,40 +52,28 @@ namespace StudentFileWorkTask.domain
 
             while (i <= j)
             {
-                string leftWord = "";
-                if (isQuestion) leftWord = results[i].Question.Quest;
-                else if (isSurname) leftWord = results[i].Student.Surname;
-                else if (isGroupName) leftWord = results[i].Student.Group.GroupName;
-                else if (isThemeName) leftWord = results[i].Question.Theme.ThemeName;
-
-                while (i <= right && leftWord.CompareTo(pivot) <= 0)
+                while (i <= right)
                 {
+                    string current = "";
+                    if (isQuestion) current = results[i].Question.Quest;
+                    else if (isSurname) current = results[i].Student.Surname;
+                    else if (isGroupName) current = results[i].Student.Group.GroupName;
+                    else if (isThemeName) current = results[i].Question.Theme.ThemeName;
+
+                    if (current.CompareTo(pivot) > 0) break; 
                     i++;
-                    if (i <= right)
-                    {
-                        if (isQuestion) leftWord = results[i].Question.Quest;
-                        else if (isSurname) leftWord = results[i].Student.Surname;
-                        else if (isGroupName) leftWord = results[i].Student.Group.GroupName;
-                        else if (isThemeName) leftWord = results[i].Question.Theme.ThemeName;
-                    }
                 }
 
-                string rightWord = "";
-                if (isQuestion) rightWord = results[j].Question.Quest;
-                else if (isSurname) rightWord = results[j].Student.Surname;
-                else if (isGroupName) rightWord = results[j].Student.Group.GroupName;
-                else if (isThemeName) rightWord = results[j].Question.Theme.ThemeName;
-
-                while (j > left && rightWord.CompareTo(pivot) >= 0)
+                while (j > left)
                 {
+                    string current = "";
+                    if (isQuestion) current = results[j].Question.Quest;
+                    else if (isSurname) current = results[j].Student.Surname;
+                    else if (isGroupName) current = results[j].Student.Group.GroupName;
+                    else if (isThemeName) current = results[j].Question.Theme.ThemeName;
+
+                    if (current.CompareTo(pivot) < 0) break; 
                     j--;
-                    if (j > left)
-                    {
-                        if (isQuestion) rightWord = results[j].Question.Quest;
-                        else if (isSurname) rightWord = results[j].Student.Surname;
-                        else if (isGroupName) rightWord = results[j].Student.Group.GroupName;
-                        else if (isThemeName) rightWord = results[j].Question.Theme.ThemeName;
-                    }
                 }
 
                 if (i < j)
@@ -79,10 +82,45 @@ namespace StudentFileWorkTask.domain
                     results[i] = results[j];
                     results[j] = temp;
                 }
-
             }
 
             StudentResult tempPivot = results[left];
+            results[left] = results[j];
+            results[j] = tempPivot;
+            return j;
+        }
+
+        public int FilterPartitionSync(List<Filter> results, int left, int right)
+        {
+            string pivot = results[left].Option;
+
+            int i = left + 1;
+            int j = right;
+
+            while (i <= j)
+            {
+                while (i <= right)
+                {
+                    if (results[i].Option.CompareTo(pivot) > 0) break;
+                    i++;
+                }
+
+                while (j > left)
+                {
+
+                    if (results[j].Option.CompareTo(pivot) < 0) break;
+                    j--;
+                }
+
+                if (i < j)
+                {
+                    Filter temp = results[i];
+                    results[i] = results[j];
+                    results[j] = temp;
+                }
+            }
+
+            Filter tempPivot = results[left];
             results[left] = results[j];
             results[j] = tempPivot;
             return j;
@@ -139,6 +177,9 @@ namespace StudentFileWorkTask.domain
                     case "Группы":
                         matches = keyWordSet.Contains(item.Student.Group.GroupName);
                         break;
+                    case "Даты":
+                        matches = keyWordSet.Contains(item.Date.ToString());
+                        break;
                 }
 
                 if (matches)
@@ -148,18 +189,20 @@ namespace StudentFileWorkTask.domain
             return result;
         }
 
-        public List<StudentResult> QuickAggregation(List<StudentResult> initial, int questionsAmountPerTheme, bool isSum = false)
+        public List<StudentResult> QuickAggregation(List<StudentResult> initial, bool isSum = false)
         {
+          //  MessageBox.Show("here");
             var dictionary = new Dictionary<string, StudentResult>();
 
             foreach (var item in initial)
             {
                 string key = $"{item.Student.Surname}_{item.Question.Theme.ThemeName}";
+                int questionAmount = initial.Where(i => i.Question.Theme == item.Question.Theme).Count();
 
                 if (dictionary.TryGetValue(key, out StudentResult? existing))
                 {
                     if (isSum) existing.Score += item.Score;
-                    else existing.Score = ((double)item.Score / questionsAmountPerTheme) * 100;
+                    else existing.Score = ((double)item.Score / questionAmount) * 100;
                 }
                 else
                 {
@@ -169,7 +212,7 @@ namespace StudentFileWorkTask.domain
                     }
                     else
                     {
-                        var percent = ((double)item.Score / questionsAmountPerTheme) * 100;
+                        var percent = ((double)item.Score / questionAmount) * 100;
                         dictionary.Add(key, new StudentResult(item.Student, new Question(item.Question.Theme), percent, item.Date));
                     }
                 }

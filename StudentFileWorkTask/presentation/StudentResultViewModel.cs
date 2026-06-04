@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using   System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -9,8 +9,9 @@ using System.Text.Json;
 using DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.MsForms;
 using Question = StudentFileWorkTask.data.Question;
 using System.Collections.Generic;
-using StudentFileWorkTask.export;
 using StudentFileWorkTask.domain;
+using TestReporter.domain.fileWork;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace StudentFileWorkTask.presentation
 {
@@ -156,6 +157,20 @@ namespace StudentFileWorkTask.presentation
             }
         }
 
+        private ObservableCollection<DateOnly> _DateList { get; set; }
+        public ObservableCollection<DateOnly> DateList
+        {
+            get { return _DateList; }
+            private set
+            {
+                if (_DateList != value)
+                {
+                    _DateList = value;
+                    OnPropertyChanged(nameof(DateList));
+                }
+            }
+        }
+
         private ObservableCollection<Student> _StudentList { get; set; }
         public ObservableCollection<Student> StudentList
         {
@@ -204,17 +219,13 @@ namespace StudentFileWorkTask.presentation
             GroupList = new ObservableCollection<Group>();
             StudentList = new ObservableCollection<Student>();
             ThemeList = new ObservableCollection<Theme>();
+            DateList = new ObservableCollection<DateOnly>();
             _questionList = new ObservableCollection<Question>();
             _InitialStudentResultList = new ObservableCollection<StudentResult>();
             StudentResultList = new ObservableCollection<StudentResult>();
             OptionList = new ObservableCollection<StudentResultFilter>();
 
-            AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
-            AddFilterIfExists("Студенты", StudentList, s => s.Surname);
-            if (currentTemplate.IsGroupExists)
-            {
-                AddFilterIfExists("Группы", GroupList, g => g.GroupName);
-            }
+            UpdateFilters();
             IsLoading = Visibility.Collapsed;
         }
 
@@ -235,14 +246,15 @@ namespace StudentFileWorkTask.presentation
             if (result.IsAllUnchecked)
             {
                 StudentResultList = _InitialStudentResultList;
-                OnAggregated();
+
             }
             else
             {
                 filtered = result.FilteredData;
                 StudentResultList = new ObservableCollection<StudentResult>(result.FilteredData);
             }
-
+            if(!_isDefaultAggregationChecked)
+                OnAggregated();
             IsLoading = Visibility.Collapsed;
         }
 
@@ -314,35 +326,45 @@ namespace StudentFileWorkTask.presentation
             ThemeList.Clear();
             foreach (var t in result.Themes) ThemeList.Add(t);
 
+            DateList.Clear();
+            foreach (var t in result.Dates) DateList.Add(t);
+
             _questionList.Clear();
             foreach (var q in result.Questions) _questionList.Add(q);
 
             _InitialStudentResultList = new ObservableCollection<StudentResult>(result.Results);
             StudentResultList = _InitialStudentResultList;
 
-            OptionList.Clear();
-            AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
-            AddFilterIfExists("Студенты", StudentList, s => s.Surname);
-            if (GroupList.Any())
-                AddFilterIfExists("Группы", GroupList, g => g.GroupName);
+            UpdateFilters();
+            OnAggregated();
 
             IsLoading = Visibility.Collapsed;
         }
 
-        public List<string> GetHeadersFromFile(string filePath)
+        public async void AppendMultipleFilesWithMapping(string filePath, MappingTemplate template)
         {
-            var headers = new List<string>();
-            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            IsLoading = Visibility.Visible;
+
+            var result = await Task.Run(() => ProcessLoadMultipleFiles(filePath, template));
+
+            foreach (var g in result.Groups) GroupList.Add(g);
+            foreach (var s in result.Students) StudentList.Add(s);
+            foreach (var t in result.Themes) ThemeList.Add(t);
+            foreach (var t in result.Dates) DateList.Add(t);
+            foreach (var q in result.Questions) _questionList.Add(q);
+            SortInitialListSync(result.Results);
+            foreach (var res in result.Results)
             {
-                var worksheet = package.Workbook.Worksheets[0];
-                int colCount = worksheet.Dimension.Columns;
-                for (int col = 1; col <= colCount; col++)
-                {
-                    var header = worksheet.Cells[1, col].Text;
-                    headers.Add(string.IsNullOrEmpty(header) ? $"Column{col}" : header);
-                }
+
+                _InitialStudentResultList.Add(res);
             }
-            return headers;
+
+            StudentResultList = _InitialStudentResultList;
+
+            UpdateFilters();
+            OnAggregated();
+
+            IsLoading = Visibility.Collapsed;
         }
 
         public void ClearFiles()
@@ -357,6 +379,7 @@ namespace StudentFileWorkTask.presentation
             StudentResultList.Clear();
             GroupList.Clear();
             StudentList.Clear();
+            DateList.Clear();
             ThemeList.Clear();
             _questionList.Clear();
             aggregated.Clear();
@@ -364,19 +387,300 @@ namespace StudentFileWorkTask.presentation
             IsFiltering = false;
             _loadedFiles.Clear();
 
-            OptionList.Clear();
-            AddFilterIfExists("Темы", ThemeList, t => t.ThemeName);
-            AddFilterIfExists("Студенты", StudentList, s => s.Surname);
-            if (currentTemplate.IsGroupExists)
-            {
-                AddFilterIfExists("Группы", GroupList, g => g.GroupName);
-            }
+            UpdateFilters();
         }
 
         public void LoadSingleFile(string filePath, MappingTemplate template)
         {
-            ClearAllData(); ClearAllData();
+            ClearAllData();
             LoadFileWithMapping(filePath, template);
+        }
+
+        private LoadFileResult ProcessLoadFile(string filePath, MappingTemplate template, Template currentTemplate)
+        {
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int colCount = worksheet.Dimension.Columns;
+
+                var headers = new List<string>(colCount);
+                for (int col = 1; col <= colCount; col++)
+                {
+                    headers.Add(worksheet.Cells[1, col].Text);
+                }
+
+                int studentIdx = headers.IndexOf(template.StudentColumn);
+                int groupIdx = headers.IndexOf(template.GroupColumn);
+                int dateIdx = headers.IndexOf(template.DateColumn);
+
+                var groupsDict = new Dictionary<string, Group>(StringComparer.Ordinal);
+                var studentsDict = new Dictionary<(string, string, string), Student>();
+                var themesDict = new Dictionary<string, Theme>(StringComparer.Ordinal);
+                var questionsDict = new Dictionary<(string, string), Question>();
+                var datesDict = new Dictionary<DateOnly, DateOnly>();
+
+                int estimatedRows = rowCount - 1;
+                var newResults = new List<StudentResult>(estimatedRows * template.QuestionColumns.Count);
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    string studentName = studentIdx >= 0 ? worksheet.Cells[row, studentIdx + 1].Text : "";
+
+                    if (string.IsNullOrEmpty(studentName)) continue;
+
+                    string groupName = groupIdx >= 0 ? worksheet.Cells[row, groupIdx + 1].Text : "";
+                    string dateStr = dateIdx >= 0 ? worksheet.Cells[row, dateIdx + 1].Text : "";
+
+                    var parts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    string surname = parts.Length > 0 ? parts[0] : "";
+                    string name = parts.Length > 1 ? parts[1] : "";
+                    string patronymic = parts.Length > 2 ? parts[2] : "";
+
+                    string groupKey = string.IsNullOrEmpty(groupName) ? "Без группы" : groupName;
+
+                    if (!groupsDict.TryGetValue(groupKey, out var group))
+                    {
+                        group = new Group(groupKey);
+                        groupsDict[groupKey] = group;
+                    }
+                    else
+                    {
+                        group = groupsDict[groupKey];
+                    }
+
+                    var studentKey = (surname, name, patronymic);
+                    if (!studentsDict.TryGetValue(studentKey, out var student))
+                    {
+                        student = new Student(surname, name, patronymic, group);
+                        studentsDict[studentKey] = student;
+                    }
+                    else
+                    {
+                        student = studentsDict[studentKey];
+                    }
+
+                    DateOnly? date = null;
+                    if (DateTime.TryParse(dateStr, out var dt))
+                    {
+                        date = DateOnly.FromDateTime(dt);
+                        if (date.HasValue && !datesDict.ContainsKey(date.Value))
+                        {
+                            datesDict[date.Value] = date.Value;
+                        }
+                    }
+
+                    string themeName = System.IO.Path.GetFileName(filePath);
+                    if (!themesDict.TryGetValue(themeName, out var theme))
+                    {
+                        theme = new Theme(themeName);
+                        themesDict[themeName] = theme;
+                    }
+                    else
+                    {
+                        theme = themesDict[themeName];
+                    }
+
+                    for (int q = 0; q < template.QuestionColumns.Count; q++)
+                    {
+                        string questionCol = template.QuestionColumns[q];
+                        string scoreCol = template.ScoreColumns.Count > q ? template.ScoreColumns[q] : "";
+
+                        int qIdx = headers.IndexOf(questionCol);
+                        int sIdx = headers.IndexOf(scoreCol);
+
+                        if (qIdx < 0 || sIdx < 0) continue;
+
+                        string questionText = worksheet.Cells[1, qIdx + 1].Text;
+                        double score = double.TryParse(worksheet.Cells[row, sIdx + 1].Text, out var val) ? val : 0;
+
+                        var questionKey = (themeName, questionText);
+                        if (!questionsDict.TryGetValue(questionKey, out var question))
+                        {
+                            question = new Question(theme, questionText);
+                            questionsDict[questionKey] = question;
+                        }
+                        else
+                        {
+                            question = questionsDict[questionKey];
+                        }
+
+                        newResults.Add(new StudentResult(student, question, score, date));
+                    }
+                }
+
+                SortInitialListSync(newResults);
+
+                return new LoadFileResult
+                {
+                    Groups = groupsDict.Values.ToList(),
+                    Students = studentsDict.Values.ToList(),
+                    Themes = themesDict.Values.ToList(),
+                    Questions = questionsDict.Values.ToList(),
+                    Dates = datesDict.Values.ToList(),
+                    Results = newResults
+                };
+            }
+        }
+
+        private LoadFileResult ProcessLoadMultipleFiles(string filePath, MappingTemplate template)
+        {
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int colCount = worksheet.Dimension.Columns;
+
+                var headers = new List<string>(colCount);
+                for (int col = 1; col <= colCount; col++)
+                {
+                    headers.Add(worksheet.Cells[1, col].Text);
+                }
+
+                int studentIdx = headers.IndexOf(template.StudentColumn);
+                int groupIdx = headers.IndexOf(template.GroupColumn);
+                int dateIdx = headers.IndexOf(template.DateColumn);
+
+                var groupsDict = new Dictionary<string, Group>(StringComparer.Ordinal);
+                var studentsDict = new Dictionary<string, Student>(StringComparer.Ordinal);
+                var themesDict = new Dictionary<string, Theme>(StringComparer.Ordinal);
+                var questionsDict = new Dictionary<string, Question>(StringComparer.Ordinal);
+                var datesDict = new HashSet<DateOnly>();
+
+                var newGroups = new List<Group>();
+                var newStudents = new List<Student>();
+                var newThemes = new List<Theme>();
+                var newQuestions = new List<Question>();
+                var newDates = new List<DateOnly>();
+
+                int estimatedRows = rowCount - 1;
+                var newResults = new List<StudentResult>(estimatedRows * template.QuestionColumns.Count);
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    string studentName = studentIdx >= 0 ? worksheet.Cells[row, studentIdx + 1].Text : "";
+
+                    if (string.IsNullOrEmpty(studentName)) continue;
+
+                    string groupName = groupIdx >= 0 ? worksheet.Cells[row, groupIdx + 1].Text : "";
+                    string dateStr = dateIdx >= 0 ? worksheet.Cells[row, dateIdx + 1].Text : "";
+
+                    var parts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    string surname = parts.Length > 0 ? parts[0] : "";
+                    string name = parts.Length > 1 ? parts[1] : "";
+                    string patronymic = parts.Length > 2 ? parts[2] : "";
+
+                    string groupKey = string.IsNullOrEmpty(groupName) ? "Без группы" : groupName;
+
+                    Group group;
+                    var existingGroup = GroupList.FirstOrDefault(g => g.GroupName == groupKey);
+                    if (existingGroup != null)
+                    {
+                        group = existingGroup;
+                    }
+                    else if (!groupsDict.TryGetValue(groupKey, out group))
+                    {
+                        group = new Group(groupKey);
+                        groupsDict[groupKey] = group;
+                        newGroups.Add(group);
+                    }
+                    else
+                    {
+                        group = groupsDict[groupKey];
+                    }
+
+                    string studentKey = $"{surname}|{name}|{patronymic}";
+                    Student student;
+                    var existingStudent = StudentList.FirstOrDefault(s => $"{s.Surname}|{s.Name}|{s.Patronymic}" == studentKey);
+                    if (existingStudent != null)
+                    {
+                        student = existingStudent;
+                    }
+                    else if (!studentsDict.TryGetValue(studentKey, out student))
+                    {
+                        student = new Student(surname, name, patronymic, group);
+                        studentsDict[studentKey] = student;
+                        newStudents.Add(student);
+                    }
+                    else
+                    {
+                        student = studentsDict[studentKey];
+                    }
+
+                    DateOnly? date = null;
+                    if (DateTime.TryParse(dateStr, out var dt))
+                    {
+                        date = DateOnly.FromDateTime(dt);
+                        if (date.HasValue && !DateList.Contains(date.Value) && !datesDict.Contains(date.Value))
+                        {
+                            datesDict.Add(date.Value);
+                            newDates.Add(date.Value);
+                        }
+                    }
+
+                    string themeName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    Theme theme;
+                    var existingTheme = ThemeList.FirstOrDefault(t => t.ThemeName == themeName);
+                    if (existingTheme != null)
+                    {
+                        theme = existingTheme;
+                    }
+                    else if (!themesDict.TryGetValue(themeName, out theme))
+                    {
+                        theme = new Theme(themeName);
+                        themesDict[themeName] = theme;
+                        newThemes.Add(theme);
+                    }
+                    else
+                    {
+                        theme = themesDict[themeName];
+                    }
+
+                    for (int q = 0; q < template.QuestionColumns.Count; q++)
+                    {
+                        string questionCol = template.QuestionColumns[q];
+                        string scoreCol = template.ScoreColumns.Count > q ? template.ScoreColumns[q] : "";
+
+                        int qIdx = headers.IndexOf(questionCol);
+                        int sIdx = headers.IndexOf(scoreCol);
+
+                        if (qIdx < 0 || sIdx < 0) continue;
+
+                        string questionText = worksheet.Cells[1, qIdx + 1].Text;
+                        double score = double.TryParse(worksheet.Cells[row, sIdx + 1].Text, out var val) ? val : 0;
+
+                        string questionKey = $"{themeName}|{questionText}";
+                        Question question;
+                        var existingQuestion = _questionList.FirstOrDefault(q => $"{q.Theme.ThemeName}|{q.Quest}" == questionKey);
+                        if (existingQuestion != null)
+                        {
+                            question = existingQuestion;
+                        }
+                        else if (!questionsDict.TryGetValue(questionKey, out question))
+                        {
+                            question = new Question(theme, questionText);
+                            questionsDict[questionKey] = question;
+                            newQuestions.Add(question);
+                        }
+                        else
+                        {
+                            question = questionsDict[questionKey];
+                        }
+
+                        newResults.Add(new StudentResult(student, question, score, date));
+                    }
+                }
+
+                return new LoadFileResult
+                {
+                    Groups = newGroups,
+                    Students = newStudents,
+                    Themes = newThemes,
+                    Questions = newQuestions,
+                    Dates = newDates,
+                    Results = newResults
+                };
+            }
         }
 
         private FilterResult ProcessFilter(FilterSnapshot snapshot)
@@ -411,10 +715,10 @@ namespace StudentFileWorkTask.presentation
                 return snapshot.CurrentList;
 
             if (snapshot.IsSumChecked)
-                return sortUitls.QuickAggregation(snapshot.CurrentList, questionAmount, true);
+                return sortUitls.QuickAggregation(snapshot.CurrentList, true);
 
             if (snapshot.IsMiddleChecked)
-                return sortUitls.QuickAggregation(snapshot.CurrentList, questionAmount);
+                return sortUitls.QuickAggregation(snapshot.CurrentList);
 
             return snapshot.CurrentList;
         }
@@ -436,124 +740,23 @@ namespace StudentFileWorkTask.presentation
             return new FileAddResult { NewFiles = newFiles, AddedCount = added };
         }
 
-        private LoadFileResult ProcessLoadFile(string filePath, MappingTemplate template, Template currentTemplate)
-        {
-            using (var package = new ExcelPackage(new FileInfo(filePath)))
-            {
-                var worksheet = package.Workbook.Worksheets[0];
-                int rowCount = worksheet.Dimension.Rows;
-                int colCount = worksheet.Dimension.Columns;
-
-                var headers = new List<string>(colCount);
-                for (int col = 1; col <= colCount; col++)
-                {
-                    headers.Add(worksheet.Cells[1, col].Text);
-                }
-
-                int studentIdx = headers.IndexOf(template.StudentColumn);
-                int groupIdx = headers.IndexOf(template.GroupColumn);
-                int dateIdx = headers.IndexOf(template.DateColumn);
-
-                var groupsDict = new Dictionary<string, Group>(StringComparer.Ordinal);
-                var studentsDict = new Dictionary<(string, string, string), Student>();
-                var themesDict = new Dictionary<string, Theme>(StringComparer.Ordinal);
-                var questionsDict = new Dictionary<(string, string), Question>();
-
-                int estimatedRows = rowCount - 1;
-                var newResults = new List<StudentResult>(estimatedRows * template.QuestionColumns.Count);
-
-                for (int row = 2; row <= rowCount; row++)
-                {
-                    string studentName = studentIdx >= 0 ? worksheet.Cells[row, studentIdx + 1].Text : "";
-                    if (string.IsNullOrEmpty(studentName)) continue;
-
-                    string groupName = groupIdx >= 0 ? worksheet.Cells[row, groupIdx + 1].Text : "";
-                    string dateStr = dateIdx >= 0 ? worksheet.Cells[row, dateIdx + 1].Text : "";
-
-                    var parts = studentName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    string surname = parts.Length > 0 ? parts[0] : "";
-                    string name = parts.Length > 1 ? parts[1] : "";
-                    string patronymic = parts.Length > 2 ? parts[2] : "";
-
-                    string groupKey = string.IsNullOrEmpty(groupName) ? "Без группы" : groupName;
-                    if (!groupsDict.TryGetValue(groupKey, out var group))
-                    {
-                        group = new Group(groupKey);
-                        groupsDict[groupKey] = group;
-                    }
-
-                    var studentKey = (surname, name, patronymic);
-                    if (!studentsDict.TryGetValue(studentKey, out var student))
-                    {
-                        student = new Student(surname, name, patronymic, group);
-                        studentsDict[studentKey] = student;
-                    }
-
-                    DateOnly? date = null;
-                    if (DateTime.TryParse(dateStr, out var dt))
-                        date = DateOnly.FromDateTime(dt);
-
-                    string themeName = System.IO.Path.GetFileName(filePath);
-                    if (!themesDict.TryGetValue(themeName, out var theme))
-                    {
-                        theme = new Theme(themeName);
-                        themesDict[themeName] = theme;
-                    }
-
-                    for (int q = 0; q < template.QuestionColumns.Count; q++)
-                    {
-                        string questionCol = template.QuestionColumns[q];
-                        string scoreCol = template.ScoreColumns.Count > q ? template.ScoreColumns[q] : "";
-
-                        int qIdx = headers.IndexOf(questionCol);
-                        int sIdx = headers.IndexOf(scoreCol);
-
-                        if (qIdx < 0 || sIdx < 0) continue;
-
-                        string questionText = worksheet.Cells[row, qIdx + 1].Text;
-                        double score = double.TryParse(worksheet.Cells[row, sIdx + 1].Text, out var val) ? val : 0;
-
-                        var questionKey = (themeName, questionText);
-                        if (!questionsDict.TryGetValue(questionKey, out var question))
-                        {
-                            question = new Question(theme, questionText);
-                            questionsDict[questionKey] = question;
-                        }
-
-                        newResults.Add(new StudentResult(student, question, score, date));
-                    }
-                }
-
-                SortInitialListSync(newResults);
-
-                return new LoadFileResult
-                {
-                    Groups = groupsDict.Values.ToList(),
-                    Students = studentsDict.Values.ToList(),
-                    Themes = themesDict.Values.ToList(),
-                    Questions = questionsDict.Values.ToList(),
-                    Results = newResults
-                };
-            }
-        }
-
         private List<StudentResult> GetCurrentListForAggregation()
         {
-            if (IsFiltering && IsDefaultggregationChecked)
+            if (IsFiltering)
             {
                 return filtered.ToList();
             }
+  
             return _InitialStudentResultList.ToList();
         }
 
         private void SortInitialListSync(List<StudentResult> resultList)
         {
-
-            sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1,  isThemeName: true);
+            sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1, isThemeName: true);
 
             if (currentTemplate.IsGroupExists)
             {
-                sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1,  isGroupName: true);
+                sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1, isGroupName: true);
             }
 
             sortUitls.QuickSortSync(resultList, 0, resultList.Count() - 1, isSurname: true);
@@ -571,6 +774,7 @@ namespace StudentFileWorkTask.presentation
                 .Select(item => new Filter(nameSelector(item), false))
                 .ToList();
 
+            sortUitls.QuckFilterSortSync(filterList , 0, filterList.Count() - 1);
             if (filterList.Any() && filterList != null)
             {
                 OptionList.Add(new StudentResultFilter(categoryName, filterList));
@@ -584,74 +788,6 @@ namespace StudentFileWorkTask.presentation
                 : Visibility.Visible;
         }
 
-        private int StringPartitionSync(List<StudentResult> results, int left, int right, bool isQuestion, bool isSurname, bool isGroupName, bool isThemeName)
-        {
-            string pivot = "";
-            if (isQuestion) pivot = results[left].Question.Quest;
-            else if (isSurname) pivot = results[left].Student.Surname;
-            else if (isGroupName) pivot = results[left].Student.Group.GroupName;
-            else if (isThemeName) pivot = results[left].Question.Theme.ThemeName;
-
-            int i = left + 1;
-            int j = right;
-
-            while (i <= j)
-            {
-                string leftWord = "";
-                if (isQuestion) leftWord = results[i].Question.Quest;
-                else if (isSurname) leftWord = results[i].Student.Surname;
-                else if (isGroupName) leftWord = results[i].Student.Group.GroupName;
-                else if (isThemeName) leftWord = results[i].Question.Theme.ThemeName;
-
-                while (i <= right && leftWord.CompareTo(pivot) <= 0)
-                {
-                    i++;
-                    if (i <= right)
-                    {
-                        if (isQuestion) leftWord = results[i].Question.Quest;
-                        else if (isSurname) leftWord = results[i].Student.Surname;
-                        else if (isGroupName) leftWord = results[i].Student.Group.GroupName;
-                        else if (isThemeName) leftWord = results[i].Question.Theme.ThemeName;
-                    }
-                }
-
-                string rightWord = "";
-                if (isQuestion) rightWord = results[j].Question.Quest;
-                else if (isSurname) rightWord = results[j].Student.Surname;
-                else if (isGroupName) rightWord = results[j].Student.Group.GroupName;
-                else if (isThemeName) rightWord = results[j].Question.Theme.ThemeName;
-
-                while (j > left && rightWord.CompareTo(pivot) >= 0)
-                {
-                    j--;
-                    if (j > left)
-                    {
-                        if (isQuestion) rightWord = results[j].Question.Quest;
-                        else if (isSurname) rightWord = results[j].Student.Surname;
-                        else if (isGroupName) rightWord = results[j].Student.Group.GroupName;
-                        else if (isThemeName) rightWord = results[j].Question.Theme.ThemeName;
-                    }
-                }
-
-                if (i < j)
-                {
-                    StudentResult temp = results[i];
-                    results[i] = results[j];
-                    results[j] = temp;
-                }
-
-                SortInitialList(_InitialStudentResultList.ToList());
-                StudentResultList = _InitialStudentResultList;
-
-                UpdateFilters();
-            }
-
-            StudentResult tempPivot = results[left];
-            results[left] = results[j];
-            results[j] = tempPivot;
-            return j;
-        }
-
         private void UpdateFilters()
         {
             OptionList.Clear();
@@ -659,27 +795,8 @@ namespace StudentFileWorkTask.presentation
             AddFilterIfExists("Студенты", StudentList, s => s.Surname);
             if (GroupList.Any())
                 AddFilterIfExists("Группы", GroupList, g => g.GroupName);
-        }
-
-        private void SortInitialList(List<StudentResult> resultList)
-        {
-            List<StudentResult> sorted = resultList.OrderBy(r => r.Question.Quest).ToList();
-
-            if (currentTemplate.IsDataExists)
-            {
-                sorted = sorted.OrderBy(r => r.Date).ToList();
-            }
-
-            sorted = sorted.OrderBy(r => r.Student.Surname).ToList();
-
-            if (currentTemplate.IsGroupExists)
-            {
-                sorted = sorted.OrderBy(r => r.Student.Group.GroupName).ToList();
-            }
-
-            sorted = sorted.OrderBy(r => r.Question.Theme.ThemeName).ToList();
-
-            _InitialStudentResultList = new ObservableCollection<StudentResult>(sorted);
+            if (DateList.Any())
+                AddFilterIfExists("Даты", DateList, g => g.ToString());
         }
     }
 
@@ -716,6 +833,7 @@ namespace StudentFileWorkTask.presentation
         public List<Student> Students { get; set; }
         public List<Theme> Themes { get; set; }
         public List<Question> Questions { get; set; }
+        public List<DateOnly> Dates { get; set;  }
         public List<StudentResult> Results { get; set; }
     }
 }
