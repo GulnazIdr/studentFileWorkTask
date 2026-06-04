@@ -157,26 +157,18 @@ namespace StudentFileWorkTask.presentation
 
                 if (filePath != null)
                 {
-                    if (studentResultViewModel.LoadedFiles.Contains(filePath))
-                    {
-                        MessageBox.Show($"Файл '{fileName}' уже добавлен в отчет.");
-                        return;
-                    }
-
                     var headers = importService.GetHeadersFromFile(filePath);
                     var mappingWindow = new ColumnMappingWindow(headers);
 
                     if (mappingWindow.ShowDialog() == true)
                     {
-                        studentResultViewModel.AppendMultipleFilesWithMapping(filePath, mappingWindow.ResultTemplate); 
-                        studentResultViewModel.LoadedFiles.Add(filePath);
-
-                        if(studentResultViewModel.IsLoading == Visibility.Collapsed)
-                            MessageBox.Show($"Файл '{fileName}' загружен и добавлен в отчет.");
+                        studentResultViewModel.LoadFileWithMapping(filePath, mappingWindow.ResultTemplate);
+                        MessageBox.Show($"Файл '{fileName}' загружен.");
                     }
                 }
             }
         }
+
         private void PdfExportBtn_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new SaveFileDialog
@@ -420,7 +412,7 @@ namespace StudentFileWorkTask.presentation
 
                     doc.Close();
 
-                    MessageBox.Show("PDF успешно создан!");
+                    MessageBox.Show($"PDF сохранён!\nПуть: {dialog.FileName}", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
